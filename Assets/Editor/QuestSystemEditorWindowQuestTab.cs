@@ -15,7 +15,7 @@ namespace QuestSystem
         class QuestMakeData
         {
             public string QuestId { get; set; } = string.Empty;
-            public string Discription { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
         }
 
         #endregion
@@ -23,124 +23,184 @@ namespace QuestSystem
         
         private QuestMakeData _questMakeData;
         
-        private static Texture2D _rowTexture;
-        public static Texture2D RowTexture {
-            get {
-                if (_rowTexture == null ) {
-                    _rowTexture = new Texture2D ( 1 , 1 );
-//                    _rowTexture.SetPixel ( 0 , 0 , new Color32 ( 222 , 222 , 222 , 255 ));
-                    _rowTexture.SetPixel ( 0 , 0 , new Color32 ( 255 , 255 , 255 , 255 ));
-                }
-                return _rowTexture;
-            }
-        }
+//        private static Texture2D _rowTexture;
+//        public static Texture2D RowTexture {
+//            get {
+//                if (_rowTexture == null ) {
+//                    _rowTexture = new Texture2D ( 1 , 1 );
+////                    _rowTexture.SetPixel ( 0 , 0 , new Color32 ( 222 , 222 , 222 , 255 ));
+//                    _rowTexture.SetPixel ( 0 , 0 , new Color32 ( 255 , 255 , 255 , 255 ));
+//                }
+//                return _rowTexture;
+//            }
+//        }
         
         private GUIStyle guiStyle = new GUIStyle();
 
-        private Rect _position;
-        private Vector2 _scrollPosition;
+        private Rect _tabPosition;
         
-        MultiColumnHeader columnHeader;
-        MultiColumnHeaderState.Column[] columns;
+        private Vector2 _tableScrollPosition;
+        private Vector2 _detailScrollPosition;
+        private string _searchText;
+        
+        MultiColumnHeader _columnHeader;
+        MultiColumnHeaderState.Column[] _columns;
+        private int? _selectedRowIdx;
         
         
-        internal void OnEnable(Rect position)
+        internal void OnEnable(Rect tabPosition)
         {
-            _position = position;
+            _tabPosition = tabPosition;
             
             if (null == _questMakeData)
             {
                 _questMakeData = new QuestMakeData();
             }
-            
-            
+
+            guiStyle.alignment = TextAnchor.MiddleLeft;
+
         }
 
-        
-        
-        internal void OnGUI(Rect position)
+
+       
+        internal void OnGUI(Rect tabPosition)
         {
-            if (_position != position || null == columns)
+            if (_tabPosition != tabPosition || null == _columns)
             {
-                _position = position;
+                _tabPosition = tabPosition;
                 ResizeColumn();
 
             }
             
+            //상단 여백
             GUILayout.Space(10);
+            //검색창, 생성버튼
+            DrawTopBar();
+            //테이블 그리기
+            DrawTable();
+            DrawDetail();
+
+            //하단 여백
+            GUILayout.Space(10);
+        }
+
+        void DrawTopBar()
+        {
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.BeginVertical();
+                {
+                    GUILayout.Space(4);
+                    _searchText = GUILayout.TextField(_searchText, "SearchTextField");
+                }
+                GUILayout.EndVertical();
+//            for (int i = 0; i < words.Count; i++)
+//            {
+//                if (string.IsNullOrEmpty(searchText) || words[i].Contains(searchText))
+//                {
+//                    GUILayout.Button(words[i]);
+//                }
+//            }
+
+                if (GUILayout.Button("Create", GUILayout.Width(100)))
+                {
+                
+                }
+                if (GUILayout.Button("DeleteAll", GUILayout.Width(100)))
+                {
+                
+                }
+            }
+            GUILayout.EndHorizontal();
             
-            //
-            //
-            //
-            
-            columnHeader = new MultiColumnHeader(new MultiColumnHeaderState(columns));
-            columnHeader.height = 25;
-            columnHeader.ResizeToFit();
+            GUILayout.Space(10);
+
+        }
+
+        void DrawTable()
+        {
+            _columnHeader = new MultiColumnHeader(new MultiColumnHeaderState(_columns));
+            _columnHeader.height = 25;
+            _columnHeader.ResizeToFit();
             
             // calculate the window visible rect
             GUILayout.FlexibleSpace();
             var windowVisibleRect = GUILayoutUtility.GetLastRect();
-            windowVisibleRect.width = position.width;
-            windowVisibleRect.height = position.height;
+            windowVisibleRect.width = _tabPosition.width;
+            windowVisibleRect.height = _tabPosition.height;
  
             // draw the column headers
             var headerRect = windowVisibleRect;
-            headerRect.height = columnHeader.height;
+            headerRect.height = _columnHeader.height;
             float xScroll = 0;
-            columnHeader.OnGUI(headerRect, xScroll);
+            _columnHeader.OnGUI(headerRect, xScroll);
  
             GUILayout.Space(25);
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
-            for (int i = 0; i < 40; ++i)
+            GUILayout.BeginArea(new Rect(_tabPosition.x, _tabPosition.y + 60, _tabPosition.width, _tabPosition.height - 60));
+            _tableScrollPosition = GUILayout.BeginScrollView(_tableScrollPosition);
+            for (int rowIdx = 0; rowIdx < 1; ++rowIdx)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Box("Test", GUILayout.Width(columnHeader.GetColumn(0).width-6));
-                GUILayout.Box("Test2", GUILayout.Width(columnHeader.GetColumn(1).width-6));
-                GUILayout.EndHorizontal();
+
+                if (rowIdx == _selectedRowIdx)
+                {
+                    GUILayout.BeginHorizontal("LODSliderRangeSelected");
+                }
+                else
+                {
+                    GUILayout.BeginHorizontal("box");
+                }
                 
+                if (GUILayout.Button("Test" + rowIdx, "FrameBox", GUILayout.Width(_columnHeader.GetColumn(0).width - 10)))
+                {
+                    Debug.LogError(rowIdx);
+                    _selectedRowIdx = rowIdx;
+                }
+
+                if (GUILayout.Button("DDDDDD", "FrameBox", GUILayout.Width(_columnHeader.GetColumn(1).width - 10)))
+                {
+                    Debug.LogError(rowIdx);
+                    _selectedRowIdx = rowIdx;
+                }
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
-            
-            
-//            for (int n = 0; n < 20; ++n)
+            GUILayout.EndArea();
+        }
+
+        void DrawDetail()
+        {
+//            if (_selectedRowIdx.HasValue)
 //            {
-//                for (int i = 0; i < columns.Length; i++)
-//                {
-//                    // calculate column content rect
-//                    var contentRect = columnHeader.GetColumnRect(i);
-//                    contentRect.x -= xScroll;
-//                    contentRect.y = contentRect.yMax;
-//                    contentRect.yMax = windowVisibleRect.yMax;
-//
-//                    // custom content GUI...
-//                    //                GUI.DrawTexture(contentRect, Texture2D.whiteTexture, ScaleMode.StretchToFill, false, 1f, new Color(1f, 0f, 0f, 0.5f), 10, 10);
-//                    GUI.Label(contentRect, "Test");
-//                }
+//                _detailScrollPosition = GUILayout.BeginScrollView(_detailScrollPosition, "TE ElementBackground", GUILayout.Height(_tabPosition.height*0.2f), GUILayout.Width(_tabPosition.width), GUILayout.ExpandWidth(false));
+//                GUILayout.Space(3);
+//                GUILayout.Label("QuestID");
+//                GUILayout.Space(3);
+//                GUILayout.Label("DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription");
+//                GUILayout.EndScrollView();
 //            }
-            
-            GUILayout.Space(10);
+
         }
 
 
         void ResizeColumn()
         {
-            columns = new MultiColumnHeaderState.Column[]
+            _columns = new MultiColumnHeaderState.Column[]
             {
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("col1"),
-                    width = _position.width * 0.3f,
-                    minWidth = _position.width * 0.2f,
-                    maxWidth = _position.width * 0.7f,
+                    headerContent = new GUIContent("QuestId"),
+                    width = _tabPosition.width * 0.3f,
+                    minWidth = _tabPosition.width * 0.2f,
+                    maxWidth = _tabPosition.width * 0.7f,
                     autoResize = true,
                     headerTextAlignment = TextAlignment.Center
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("col2"),
-                    width = _position.width * 0.7f,
-                    minWidth = _position.width * 0.3f,
-                    maxWidth = _position.width * 0.8f,
+                    headerContent = new GUIContent("Description"),
+                    width = _tabPosition.width * 0.7f,
+                    minWidth = _tabPosition.width * 0.3f,
+                    maxWidth = _tabPosition.width * 0.8f,
                     autoResize = true,
                     headerTextAlignment = TextAlignment.Center
                 },
@@ -186,7 +246,7 @@ namespace QuestSystem
                 GUILayout.Space(10);
                 //설명입력
                 GUILayout.Label("Description", EditorStyles.boldLabel);
-                _questMakeData.Discription = GUILayout.TextArea(_questMakeData.Discription, GUILayout.MaxWidth(width), GUILayout.Height(300));
+                _questMakeData.Description = GUILayout.TextArea(_questMakeData.Description, GUILayout.MaxWidth(width), GUILayout.Height(300));
             }
             GUILayout.EndVertical();
             
