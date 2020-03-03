@@ -31,7 +31,7 @@ namespace QuestSystem
             {
                 _questTab = new QuestSystemEditorWindowQuestTab();
             }
-            _questTab.OnEnable();
+            _questTab.OnEnable(GetSubWindowArea());
         } 
     
     
@@ -48,7 +48,7 @@ namespace QuestSystem
         void OnGUI()
         {
             GUILayout.BeginHorizontal();
-            _selectedMode = (EMode)GUILayout.Toolbar((int)_selectedMode, new string[]{ "Quest", "Switch" }, "LargeButton");
+            _selectedMode = (EMode)GUILayout.Toolbar((int)_selectedMode, System.Enum.GetNames(typeof(EMode)), "LargeButton");
             GUILayout.EndHorizontal();
             
             
