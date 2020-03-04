@@ -8,11 +8,30 @@
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="Editor" t="Include">
+          <e p="CreateQuestEditorWindow.cs" t="Include" />
+          <e p="EditQuestWindow.cs" t="Include" />
+          <e p="EditSwitchWindow.cs" t="Include" />
           <e p="GUITest.cs" t="Include" />
-          <e p="QuestSystemEditorWindowMain.cs" t="Include" />
+          <e p="PreferencesWindow.cs" t="Include" />
+          <e p="QuestSystemWindow.cs" t="Include" />
+          <e p="SearchWindowMain.cs" t="Include" />
+          <e p="SearchWindowQuestTab.cs" t="Include" />
+          <e p="SQLiteConnector.cs" t="Include" />
+          <e p="TestWindow.cs" t="Include" />
         </e>
         <e p="Scripts" t="Include">
-          <e p="QuestSystem.cs" t="Include" />
+          <e p="Database" t="Include">
+            <e p="QuestData.cs" t="Include" />
+            <e p="SQLite.cs" t="Include" />
+            <e p="SQLiteManager.cs" t="Include" />
+          </e>
+          <e p="DatabaseManager.cs" t="Include" />
+          <e p="SQLiteSample" t="Include">
+            <e p="CreateDBScript.cs" t="Include" />
+            <e p="DataService.cs" t="Include" />
+            <e p="ExistingDBScript.cs" t="Include" />
+            <e p="Person.cs" t="Include" />
+          </e>
         </e>
       </e>
       <e p="obj" t="ExcludeRecursive" />
