@@ -7,6 +7,7 @@ namespace QuestSystem
     
     public class EditQuestWindow : QuestSystemWindow
     {
+        private int KSpace = 10;
         private string _questId = string.Empty;
         private string _description = string.Empty;
     
@@ -21,17 +22,29 @@ namespace QuestSystem
 
         protected override void GUIProcess()
         {
+            GUILayout.Space(KSpace);
+            
+            GUILayout.Label("Create QuestData", "DefaultCenteredLargeText");
+            
+            GUILayout.Space(KSpace);
             
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("QuestId ");
-                _questId = GUILayout.TextField(_questId, GUILayout.Width(Screen.width * 0.8f));
+                EditorGUILayout.PrefixLabel("QuestId ");
+                _questId = GUILayout.TextField(_questId);
             }
             GUILayout.EndHorizontal();
             
-            GUILayout.Label("Description ");
-            _description = GUILayout.TextArea(_description, GUILayout.Height(100));
             
+            GUILayout.Space(KSpace);
+            
+            GUILayout.Label("Description ");
+            _description = GUILayout.TextArea(_description, GUILayout.Height(position.height - 125 - KSpace));
+            
+            GUILayout.Space(KSpace);
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(position.width * 0.2f);
             if (GUILayout.Button("Create"))
             {
                 //아이디 채크
@@ -49,6 +62,9 @@ namespace QuestSystem
                     Debug.Log("만드는데 성공");
                 }
             }
+            GUILayout.Space(position.width * 0.2f);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(KSpace);
         }
 
     

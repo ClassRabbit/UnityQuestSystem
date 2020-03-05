@@ -175,13 +175,6 @@ namespace QuestSystem
                     _searchText = GUILayout.TextField(_searchText, "SearchTextField");
                 }
                 GUILayout.EndVertical();
-//            for (int i = 0; i < words.Count; i++)
-//            {
-//                if (string.IsNullOrEmpty(searchText) || words[i].Contains(searchText))
-//                {
-//                    GUILayout.Button(words[i]);
-//                }
-//            }
 
                 if (GUILayout.Button("Search", GUILayout.Width(100)))
                 {
