@@ -114,8 +114,18 @@ namespace QuestSystem
             _connection.Close();
         }
 
+        public QuestData CreateQuestData(string questId, string description)
+        {
+            var questData = new QuestData
+            {
+                QuestId = questId,
+                Description = description
+            };
 
-        [CanBeNull]
+            _connection.Insert(questData);
+            return questData;
+        }
+
         public QuestData GetQuestData(string questId)
         {
             return _connection.Table<QuestData>().Where(questData => questData.QuestId == questId).FirstOrDefault();

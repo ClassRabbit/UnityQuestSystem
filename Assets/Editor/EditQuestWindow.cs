@@ -19,18 +19,8 @@ namespace QuestSystem
             window.Show();
         }
 
-        private void OnEnable()
+        protected override void GUIProcess()
         {
-            base.OnEnable();
-        }
-
-        void OnGUI()
-        {
-            //
-            //
-            //
-            //
-            
             
             GUILayout.BeginHorizontal();
             {
@@ -55,7 +45,8 @@ namespace QuestSystem
                 }
                 else
                 {
-                    
+                    SQLiteManager.Instance.CreateQuestData(_questId, _description);
+                    Debug.Log("만드는데 성공");
                 }
             }
         }

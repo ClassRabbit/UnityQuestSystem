@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace QuestSystem
@@ -24,12 +25,26 @@ namespace QuestSystem
 
         protected override void EnableProcess()
         {
-            Rect subPosition = GetSubWindowPosition();
+            Debug.LogError("Enable");
             if (_questTab == null)
             {
                 _questTab = new SearchWindowQuestTab();
             }
-            _questTab.EnableProcess(subPosition);
+            
+            if (_questTab == null)
+            {
+                _questTab = new SearchWindowQuestTab();
+            }
+            
+            switch(_selectedMode)
+            {
+                case EMode.Quest:
+                    _questTab.EnableProcess();
+                    break;
+                case EMode.Switch:
+                default:
+                    break;
+            }
             
         } 
     
@@ -44,37 +59,41 @@ namespace QuestSystem
             window.Show();
         }
 
-        void OnGUI()
+        protected override void GUIProcess()
         {
-
-            if (string.IsNullOrEmpty(DatabaseName))
-            {
-                return;
-            }
-            
             GUILayout.BeginHorizontal();
+            GUILayout.Space(position.width * 0.02f);
             _selectedMode = (EMode)GUILayout.Toolbar((int)_selectedMode, System.Enum.GetNames(typeof(EMode)), "LargeButton");
+            GUILayout.Space(position.width * 0.02f);
             GUILayout.EndHorizontal();
-            
-            
+
             switch(_selectedMode)
             {
                 case EMode.Quest:
-                    _questTab.OnGUI(GetSubWindowPosition());
+                    _questTab.GUIProcess(GetTabPosition());
                     break;
                 case EMode.Switch:
                 default:
                     break;
             }
         }
+
+        protected override void FocusProcess()
+        {
+            var questDatas = SQLiteManager.Instance.GetAllQuestDatas();
+            var questDataList = questDatas.ToList();
+            _questTab.FocusProcess(questDataList);
+        }
     
     
-        private Rect GetSubWindowPosition()
+        private Rect GetTabPosition()
         {
             float padding = KMenubarPadding;
-            Rect subPossition = new Rect(0, padding, position.width, position.height - padding);
-            return subPossition;
+            Rect tabPosition = new Rect(0, padding, position.width, position.height - padding);
+            return tabPosition;
         }
+        
+
 
     
     

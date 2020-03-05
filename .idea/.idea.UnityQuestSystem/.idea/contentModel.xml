@@ -25,7 +25,6 @@
             <e p="SQLite.cs" t="Include" />
             <e p="SQLiteManager.cs" t="Include" />
           </e>
-          <e p="DatabaseManager.cs" t="Include" />
           <e p="SQLiteSample" t="Include">
             <e p="CreateDBScript.cs" t="Include" />
             <e p="DataService.cs" t="Include" />

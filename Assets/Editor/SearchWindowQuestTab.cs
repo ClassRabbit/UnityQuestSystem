@@ -2,25 +2,20 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using System.Collections.Generic;
 
 namespace QuestSystem
 {
 
     internal class SearchWindowQuestTab
     {
-        
-//        private static Texture2D _rowTexture;
-//        public static Texture2D RowTexture {
-//            get {
-//                if (_rowTexture == null ) {
-//                    _rowTexture = new Texture2D ( 1 , 1 );
-//                    _rowTexture.SetPixel ( 0 , 0 , new Color32 ( 255 , 255 , 255 , 255 ));
-//                }
-//                return _rowTexture;
-//            }
-//        }
 
-        private const float KToolbarPadding = 15;
+        private const int KRowPerPage = 100;
+        private const int KSkipPageIndex = -1;
+        private const float KDetailAreaRatio = 0.25f;
+        private const int KPageAreaHeight = 100;
+        private const int KTopAreaHeight = 60;
+        private const int KTabPadding = 10;
 
         private Rect _tabPosition;
         
@@ -30,17 +25,104 @@ namespace QuestSystem
         
         MultiColumnHeader _columnHeader;
         MultiColumnHeaderState.Column[] _columns;
-        private int? _selectedRowIdx;
+        
+        
 
-        private const float KDetailAreaRatio = 0.2f;
+        private List<QuestData> _questDataList;
+
+        private int? _selectedQuestDataIndex;
+        private int _currentPageIndex = 0;
+        private int _maxPageIndex = 0;
+        List<int> _showingPageIndexList = new List<int>();
         
-        
-        internal void EnableProcess(Rect tabPosition)
+        internal void EnableProcess()
         {
-            _tabPosition = tabPosition;
         }
         
-        internal void OnGUI(Rect tabPosition)
+        internal void FocusProcess(List<QuestData> questDataList)
+        {
+            QuestData _selectedQuestData = null;
+            if (_selectedQuestDataIndex.HasValue)
+            {
+                _selectedQuestData = _questDataList[_selectedQuestDataIndex.Value];
+            }
+            _questDataList = questDataList;
+
+            if (_selectedQuestData != null)
+            {
+                bool isFound = false;
+                for (int i = 0; i < _questDataList.Count; ++i)
+                {
+                    if (_questDataList[i].QuestId == _selectedQuestData.QuestId)
+                    {
+                        isFound = true;
+                        _selectedQuestDataIndex = i;
+                        break;
+                    }
+                }
+
+                if (!isFound)
+                {
+                    _selectedQuestDataIndex = null;
+                }
+            }
+            
+            //바뀌면서 현재페이지가 범위밖일수도있다.
+            _maxPageIndex = CalcPageIndex(_questDataList.Count - 1);
+            if (_currentPageIndex > _maxPageIndex)
+            {
+                _currentPageIndex = _maxPageIndex;
+            }
+            
+            ChangeShowingPageList();
+        }
+
+        void ChangeShowingPageList()
+        {
+            
+            _maxPageIndex = CalcPageIndex(_questDataList.Count - 1);
+            _showingPageIndexList.Clear();
+            _showingPageIndexList.Add(0);
+
+            int additionalAreaCount = 3;
+            
+            //... 추가
+            if (_currentPageIndex - additionalAreaCount > 1)
+            {
+                _showingPageIndexList.Add(KSkipPageIndex);
+            }
+
+            for (int i = _currentPageIndex - additionalAreaCount; i <= _currentPageIndex + additionalAreaCount && i <= _maxPageIndex; ++i)
+            {
+                if (i < 1)
+                {
+                    continue;
+                }
+                _showingPageIndexList.Add(i);
+            }
+
+            if (_showingPageIndexList[_showingPageIndexList.Count - 1] + 1 < _maxPageIndex - 1)
+            {
+                _showingPageIndexList.Add(KSkipPageIndex);
+            }
+
+            
+            if (!_showingPageIndexList.Contains(_maxPageIndex))
+            {
+                _showingPageIndexList.Add(_maxPageIndex);
+            }
+
+//            Debug.LogError("--------------");
+//            foreach (var pageIndex in _showingPageIndexList)
+//            {
+//                Debug.Log(pageIndex);
+//            }
+//            Debug.LogError("--------------");
+        }
+
+        int CalcPageIndex(int questDataIndex) => questDataIndex / KRowPerPage;
+        
+        internal void GUIProcess(Rect tabPosition)
         {
             if (_tabPosition != tabPosition || null == _columns)
             {
@@ -48,17 +130,16 @@ namespace QuestSystem
                 ResizeColumn();
 
             }
-            
+
+            float detailHeight = _tabPosition.height * KDetailAreaRatio;
             //상단 여백
-            GUILayout.Space(10);
+            GUILayout.Space(KTabPadding);
             //검색창, 생성버튼
             DrawTopBar();
             //테이블 그리기
-            DrawTable();
-            DrawDetail();
+            DrawTable(detailHeight);
+            DrawDetail(detailHeight);
 
-            //하단 여백
-            GUILayout.Space(10);
         }
 
         void DrawTopBar()
@@ -79,22 +160,18 @@ namespace QuestSystem
 //                }
 //            }
 
-                if (GUILayout.Button("Create", GUILayout.Width(100)))
-                {
-                
-                }
-                if (GUILayout.Button("DeleteAll", GUILayout.Width(100)))
+                if (GUILayout.Button("Search", GUILayout.Width(100)))
                 {
                 
                 }
             }
             GUILayout.EndHorizontal();
             
-            GUILayout.Space(10);
+            GUILayout.Space(KTabPadding);
 
         }
 
-        void DrawTable()
+        void DrawTable(float detailHeight)
         {
             _columnHeader = new MultiColumnHeader(new MultiColumnHeaderState(_columns));
             _columnHeader.height = 25;
@@ -114,58 +191,117 @@ namespace QuestSystem
  
             GUILayout.Space(25);
             
-            if (_selectedRowIdx.HasValue)
-            {
-                GUILayout.BeginArea(new Rect(_tabPosition.x, _tabPosition.y + 60, _tabPosition.width, _tabPosition.height - 60 - (_tabPosition.height * KDetailAreaRatio)));
-            }
-            else
-            {
-                GUILayout.BeginArea(new Rect(_tabPosition.x, _tabPosition.y + 60, _tabPosition.width, _tabPosition.height - 60));
-            }
+            GUILayout.BeginArea(new Rect(_tabPosition.x, _tabPosition.y + KTopAreaHeight, _tabPosition.width, _tabPosition.height - KPageAreaHeight - detailHeight));
             
             _tableScrollPosition = GUILayout.BeginScrollView(_tableScrollPosition);
-            for (int rowIdx = 0; rowIdx < 20; ++rowIdx)
+            
+            if (_questDataList != null)
             {
-
-                if (rowIdx == _selectedRowIdx)
+                QuestData _selectedQuestData = _selectedQuestDataIndex.HasValue ? _questDataList[_selectedQuestDataIndex.Value] : null;
+                List<int> _pageList = new List<int>();
+                
+                for (int i = KRowPerPage * _currentPageIndex;
+                    i < _questDataList.Count && i < KRowPerPage * (_currentPageIndex + 1);
+                    ++i)
                 {
-                    GUILayout.BeginHorizontal("LODSliderRangeSelected");
+                    var questData = _questDataList[i];
+                    if (null != _selectedQuestData && questData.QuestId == _selectedQuestData.QuestId)
+                    {
+                        GUILayout.BeginHorizontal("LODSliderRangeSelected");
+                    }
+                    else
+                    {
+                        GUILayout.BeginHorizontal("box");
+                    }
+
+                    if (GUILayout.Button(questData.QuestId, "FrameBox",
+                        GUILayout.Width(_columnHeader.GetColumn(0).width - 10)))
+                    {
+                        _selectedQuestDataIndex = i;
+                    }
+
+                    if (GUILayout.Button(questData.Description, "FrameBox",
+                        GUILayout.Width(_columnHeader.GetColumn(1).width - 10)))
+                    {
+                        _selectedQuestDataIndex = i;
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
+            }
+            
+            GUILayout.EndScrollView();
+            GUILayout.EndArea();
+
+            bool isChangingPage = false;
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(_tabPosition.width * 0.1f);
+            
+            MakePageButton(_currentPageIndex == 0, "<", 
+                () => {
+                    --_currentPageIndex;
+                    isChangingPage = true;
+                });
+            foreach (var pageIndex in _showingPageIndexList)
+            {
+                if (KSkipPageIndex == pageIndex)
+                {
+                    MakePageButton(true, "...", () => { });
                 }
                 else
                 {
-                    GUILayout.BeginHorizontal("box");
+                    MakePageButton(pageIndex == _currentPageIndex, (pageIndex + 1).ToString(), 
+                        () => {
+                            _currentPageIndex = pageIndex;
+                            isChangingPage = true;
+                        });
                 }
-                
-                if (GUILayout.Button("Test" + rowIdx, "FrameBox", GUILayout.Width(_columnHeader.GetColumn(0).width - 10)))
-                {
-//                    Debug.LogError(rowIdx);
-                    _selectedRowIdx = rowIdx;
-                }
-
-                if (GUILayout.Button("DDDDDD", "FrameBox", GUILayout.Width(_columnHeader.GetColumn(1).width - 10)))
-                {
-//                    Debug.LogError(rowIdx);
-                    _selectedRowIdx = rowIdx;
-                }
-                GUILayout.EndHorizontal();
             }
-            GUILayout.EndScrollView();
-            GUILayout.EndArea();
+            MakePageButton(_currentPageIndex == _maxPageIndex, ">", 
+                () => {
+                    ++_currentPageIndex;
+                    isChangingPage = true;
+                });
+            GUILayout.Space(_tabPosition.width * 0.1f);
+            GUILayout.EndHorizontal();
+
+            if (isChangingPage)
+            {
+                ChangeShowingPageList();
+            }
+            
+            GUILayout.Space(7);
+            
+            Rect tableBottomBarRect = new Rect(_tabPosition.x, _tabPosition.height - detailHeight - KTabPadding, _tabPosition.width, 4);
+            
+            EditorGUI.DrawRect(tableBottomBarRect, new Color32(221, 221, 221, 255));
         }
 
-        void DrawDetail()
-        {
-            if (_selectedRowIdx.HasValue)
-            {
-                _detailScrollPosition = GUILayout.BeginScrollView(_detailScrollPosition, "TE ElementBackground",
-                    GUILayout.Height(_tabPosition.height * KDetailAreaRatio), GUILayout.Width(_tabPosition.width), GUILayout.ExpandWidth(false));
-                GUILayout.Space(3);
-                GUILayout.Label("QuestID");
-                GUILayout.Space(3);
-                GUILayout.Label("DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription");
-                GUILayout.EndScrollView();
-            }
 
+        void MakePageButton(bool isDisabled, string buttonText, Action buttonAction)
+        {
+            EditorGUI.BeginDisabledGroup(isDisabled);
+            if (GUILayout.Button(buttonText))
+            {
+                buttonAction();
+            }
+            EditorGUI.EndDisabledGroup();
+        }
+        
+
+        void DrawDetail(float detailHeight)
+        {
+            _detailScrollPosition = GUILayout.BeginScrollView(_detailScrollPosition, "TE ElementBackground",
+                GUILayout.Height(_tabPosition.height * KDetailAreaRatio), GUILayout.Width(_tabPosition.width), GUILayout.ExpandWidth(false));
+
+            if (_selectedQuestDataIndex.HasValue)
+            {
+                GUILayout.Space(3);
+                GUILayout.Label(_questDataList[_selectedQuestDataIndex.Value].QuestId);
+                GUILayout.Space(3);
+                GUILayout.Label(_questDataList[_selectedQuestDataIndex.Value].Description);
+            }
+            GUILayout.EndScrollView();
         }
 
 
@@ -193,6 +329,7 @@ namespace QuestSystem
                 },
             };
         }
+        
         
     }
 }
