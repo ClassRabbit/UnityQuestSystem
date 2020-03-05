@@ -30,6 +30,9 @@ namespace QuestSystem
 
         private List<QuestData> _questDataList;
 
+        private bool _isSearch = false;
+        private List<QuestData> _searchResultQuestDataList;
+
         private int? _selectedQuestDataIndex;
         private int _currentPageIndex = 0;
         private int _maxPageIndex = 0;
@@ -48,12 +51,26 @@ namespace QuestSystem
             }
             _questDataList = questDataList;
 
+            List<QuestData> targetQuestList;
+            if (_isSearch)
+            {
+                ChangeSearchResultQuestList();
+                targetQuestList = _searchResultQuestDataList;
+            }
+            else
+            {
+                targetQuestList = questDataList;
+            }
+            
+            
+            
+
             if (_selectedQuestData != null)
             {
                 bool isFound = false;
-                for (int i = 0; i < _questDataList.Count; ++i)
+                for (int i = 0; i < targetQuestList.Count; ++i)
                 {
-                    if (_questDataList[i].QuestId == _selectedQuestData.QuestId)
+                    if (targetQuestList[i].QuestId == _selectedQuestData.QuestId)
                     {
                         isFound = true;
                         _selectedQuestDataIndex = i;
@@ -67,20 +84,33 @@ namespace QuestSystem
                 }
             }
             
+            
+            
+            ChangeShowingPageList(targetQuestList);
+            
             //바뀌면서 현재페이지가 범위밖일수도있다.
-            _maxPageIndex = CalcPageIndex(_questDataList.Count - 1);
             if (_currentPageIndex > _maxPageIndex)
             {
                 _currentPageIndex = _maxPageIndex;
             }
-            
-            ChangeShowingPageList();
+        }
+        
+        void ChangeSearchResultQuestList()
+        {
+            _searchResultQuestDataList = new List<QuestData>();
+            foreach(var questData in _questDataList)
+            {
+                if (questData.QuestId.Contains(_searchText) || questData.Description.Contains(_searchText))
+                {
+                    _searchResultQuestDataList.Add(questData);
+                }
+            }
         }
 
-        void ChangeShowingPageList()
+        void ChangeShowingPageList(List<QuestData> targetQuestList)
         {
             
-            _maxPageIndex = CalcPageIndex(_questDataList.Count - 1);
+            _maxPageIndex = CalcPageIndex(targetQuestList.Count - 1);
             _showingPageIndexList.Clear();
             _showingPageIndexList.Add(0);
 
@@ -111,13 +141,6 @@ namespace QuestSystem
             {
                 _showingPageIndexList.Add(_maxPageIndex);
             }
-
-//            Debug.LogError("--------------");
-//            foreach (var pageIndex in _showingPageIndexList)
-//            {
-//                Debug.Log(pageIndex);
-//            }
-//            Debug.LogError("--------------");
         }
 
         int CalcPageIndex(int questDataIndex) => questDataIndex / KRowPerPage;
@@ -162,7 +185,17 @@ namespace QuestSystem
 
                 if (GUILayout.Button("Search", GUILayout.Width(100)))
                 {
-                
+                    if (string.IsNullOrEmpty(_searchText))
+                    {
+                        _isSearch = false;
+                        ChangeShowingPageList(_questDataList);
+                    }
+                    else
+                    {
+                        _isSearch = true;
+                        ChangeSearchResultQuestList();
+                        ChangeShowingPageList(_searchResultQuestDataList);
+                    }
                 }
             }
             GUILayout.EndHorizontal();
@@ -170,6 +203,8 @@ namespace QuestSystem
             GUILayout.Space(KTabPadding);
 
         }
+
+        
 
         void DrawTable(float detailHeight)
         {
@@ -194,17 +229,19 @@ namespace QuestSystem
             GUILayout.BeginArea(new Rect(_tabPosition.x, _tabPosition.y + KTopAreaHeight, _tabPosition.width, _tabPosition.height - KPageAreaHeight - detailHeight));
             
             _tableScrollPosition = GUILayout.BeginScrollView(_tableScrollPosition);
+
+            List<QuestData> targetQuestDataList = _isSearch ? _searchResultQuestDataList : _questDataList;
             
-            if (_questDataList != null)
+            if (targetQuestDataList != null)
             {
-                QuestData _selectedQuestData = _selectedQuestDataIndex.HasValue ? _questDataList[_selectedQuestDataIndex.Value] : null;
+                QuestData _selectedQuestData = _selectedQuestDataIndex.HasValue ? targetQuestDataList[_selectedQuestDataIndex.Value] : null;
                 List<int> _pageList = new List<int>();
                 
                 for (int i = KRowPerPage * _currentPageIndex;
-                    i < _questDataList.Count && i < KRowPerPage * (_currentPageIndex + 1);
+                    i < targetQuestDataList.Count && i < KRowPerPage * (_currentPageIndex + 1);
                     ++i)
                 {
-                    var questData = _questDataList[i];
+                    var questData = targetQuestDataList[i];
                     if (null != _selectedQuestData && questData.QuestId == _selectedQuestData.QuestId)
                     {
                         GUILayout.BeginHorizontal("LODSliderRangeSelected");
@@ -267,7 +304,7 @@ namespace QuestSystem
 
             if (isChangingPage)
             {
-                ChangeShowingPageList();
+                ChangeShowingPageList(targetQuestDataList);
             }
             
             GUILayout.Space(7);
