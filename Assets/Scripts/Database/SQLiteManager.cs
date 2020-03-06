@@ -125,6 +125,21 @@ namespace QuestSystem
             _connection.Insert(questData);
             return questData;
         }
+        
+        public QuestData UpdateQuestData(string questId, string description)
+        {
+            var questData = new QuestData
+            {
+                QuestId = questId,
+                Description = description
+            };
+
+            _connection.RunInTransaction(() =>
+            {
+                _connection.Update(questData);
+            });
+            return questData;
+        }
 
         public QuestData GetQuestData(string questId)
         {
