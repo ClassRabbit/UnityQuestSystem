@@ -38,6 +38,8 @@ namespace QuestSystem
         private int _maxPageIndex = 0;
         List<int> _showingPageIndexList = new List<int>();
         
+        List<QuestData> TargetQuestDataList => _isSearch ? _searchResultQuestDataList : _questDataList;
+
         internal void EnableProcess()
         {
         }
@@ -51,15 +53,9 @@ namespace QuestSystem
             }
             _questDataList = questDataList;
 
-            List<QuestData> targetQuestList;
             if (_isSearch)
             {
                 ChangeSearchResultQuestList();
-                targetQuestList = _searchResultQuestDataList;
-            }
-            else
-            {
-                targetQuestList = questDataList;
             }
             
             
@@ -68,9 +64,9 @@ namespace QuestSystem
             if (_selectedQuestData != null)
             {
                 bool isFound = false;
-                for (int i = 0; i < targetQuestList.Count; ++i)
+                for (int i = 0; i < TargetQuestDataList.Count; ++i)
                 {
-                    if (targetQuestList[i].QuestId == _selectedQuestData.QuestId)
+                    if (TargetQuestDataList[i].QuestId == _selectedQuestData.QuestId)
                     {
                         isFound = true;
                         _selectedQuestDataIndex = i;
@@ -84,9 +80,7 @@ namespace QuestSystem
                 }
             }
             
-            
-            
-            ChangeShowingPageList(targetQuestList);
+            ChangeShowingPageList();
             
             //바뀌면서 현재페이지가 범위밖일수도있다.
             if (_currentPageIndex > _maxPageIndex)
@@ -107,10 +101,9 @@ namespace QuestSystem
             }
         }
 
-        void ChangeShowingPageList(List<QuestData> targetQuestList)
+        void ChangeShowingPageList()
         {
-            
-            _maxPageIndex = CalcPageIndex(targetQuestList.Count - 1);
+            _maxPageIndex = CalcPageIndex(TargetQuestDataList.Count - 1);
             _showingPageIndexList.Clear();
             _showingPageIndexList.Add(0);
 
@@ -181,14 +174,14 @@ namespace QuestSystem
                     if (string.IsNullOrEmpty(_searchText))
                     {
                         _isSearch = false;
-                        ChangeShowingPageList(_questDataList);
                     }
                     else
                     {
                         _isSearch = true;
                         ChangeSearchResultQuestList();
-                        ChangeShowingPageList(_searchResultQuestDataList);
                     }
+                    
+                    ChangeShowingPageList();
                 }
             }
             GUILayout.EndHorizontal();
@@ -223,7 +216,7 @@ namespace QuestSystem
             
             _tableScrollPosition = GUILayout.BeginScrollView(_tableScrollPosition);
 
-            List<QuestData> targetQuestDataList = _isSearch ? _searchResultQuestDataList : _questDataList;
+            List<QuestData> targetQuestDataList = TargetQuestDataList;
             
             if (targetQuestDataList != null)
             {
@@ -297,7 +290,7 @@ namespace QuestSystem
 
             if (isChangingPage)
             {
-                ChangeShowingPageList(targetQuestDataList);
+                ChangeShowingPageList();
             }
             
             GUILayout.Space(7);
@@ -326,10 +319,17 @@ namespace QuestSystem
 
             if (_selectedQuestDataIndex.HasValue)
             {
+                var questData = TargetQuestDataList[_selectedQuestDataIndex.Value];
                 GUILayout.Space(3);
-                GUILayout.Label(_questDataList[_selectedQuestDataIndex.Value].QuestId);
+                GUILayout.Label(questData.QuestId);
                 GUILayout.Space(3);
-                GUILayout.Label(_questDataList[_selectedQuestDataIndex.Value].Description);
+                GUILayout.Label(questData.Description);
+                if (GUILayout.Button("Edit"))
+                {
+                    EditQuestWindow window = (EditQuestWindow)EditorWindow.GetWindow(typeof(EditQuestWindow));
+                    window.Show();
+                    window.UpdateQuestData(questData);
+                }
             }
             GUILayout.EndScrollView();
         }

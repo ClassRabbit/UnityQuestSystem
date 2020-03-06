@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 
 namespace QuestSystem
@@ -10,6 +9,8 @@ namespace QuestSystem
         private int KSpace = 10;
         private string _questId = string.Empty;
         private string _description = string.Empty;
+        
+        public bool IsUpdate = false;
     
         // Add menu named "My Window" to the Window menu
         [MenuItem("QuestSystem/EditQuestWindow")]
@@ -18,6 +19,13 @@ namespace QuestSystem
             // Get existing open window or if none, make a new one:
             EditQuestWindow window = (EditQuestWindow)EditorWindow.GetWindow(typeof(EditQuestWindow));
             window.Show();
+        }
+
+        internal void UpdateQuestData(QuestData questData)
+        {
+            IsUpdate = true;
+            _questId = questData.QuestId;
+            _description = questData.Description;
         }
 
         protected override void GUIProcess()
@@ -30,8 +38,10 @@ namespace QuestSystem
             
             GUILayout.BeginHorizontal();
             {
+                EditorGUI.BeginDisabledGroup(IsUpdate);
                 EditorGUILayout.PrefixLabel("QuestId ");
                 _questId = GUILayout.TextField(_questId);
+                EditorGUI.EndDisabledGroup();
             }
             GUILayout.EndHorizontal();
             

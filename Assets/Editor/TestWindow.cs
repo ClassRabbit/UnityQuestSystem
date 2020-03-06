@@ -26,12 +26,7 @@ namespace QuestSystem
 
         void OnGUI()
         {
-            if (GUILayout.Button("Click"))
-            {
-                CreateQuestEditorWindow window = (CreateQuestEditorWindow)EditorWindow.GetWindow(typeof(CreateQuestEditorWindow));
-                window.Show();
-            }
-            
+         
         }
     
     
