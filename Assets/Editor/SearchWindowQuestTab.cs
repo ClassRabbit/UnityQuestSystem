@@ -9,13 +9,13 @@ namespace QuestSystem
 
     internal class SearchWindowQuestTab : SearchWindowTab
     {
-        private const int KRowPerPage = 100;
+        private const int KQuestPerPage = 100;
         
         private List<QuestData> _questDataList;
         private List<QuestData> _searchResultQuestDataList;
         List<QuestData> TargetQuestDataList => IsSearch ? _searchResultQuestDataList : _questDataList;
         
-        protected override int MaxPageIndex => (TargetQuestDataList.Count - 1) / KRowPerPage;
+        protected override int MaxPageIndex => (TargetQuestDataList.Count - 1) / KQuestPerPage;
 
 
         internal void EnableProcess()
@@ -82,8 +82,8 @@ namespace QuestSystem
             {
                 QuestData selectedQuestData = SelectedDataIndex.HasValue ? targetQuestDataList[SelectedDataIndex.Value] : null;
 
-                for (int i = KRowPerPage * CurrentPageIndex;
-                    i < targetQuestDataList.Count && i < KRowPerPage * (CurrentPageIndex + 1);
+                for (int i = KQuestPerPage * CurrentPageIndex;
+                    i < targetQuestDataList.Count && i < KQuestPerPage * (CurrentPageIndex + 1);
                     ++i)
                 {
                     var questData = targetQuestDataList[i];
