@@ -59,6 +59,9 @@ namespace QuestSystem
                         var dbPath = string.Format(directoryPath + $"{QuestSystemDatabaseName}");
                         var connection = new SQLiteConnection(dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
                         connection.CreateTable<QuestData>();
+                        connection.CreateTable<SwitchDescriptionData>();
+                        connection.CreateTable<SwitchComponentData>();
+                        connection.CreateTable<SwitchStateResultData>();
                         connection.Close();
                     }
                 }

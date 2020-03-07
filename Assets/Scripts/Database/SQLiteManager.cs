@@ -129,7 +129,7 @@ namespace QuestSystem
 
         public QuestData GetQuestData(string questId)
         {
-            return GetDatas<QuestData>((questData) => { return questData.QuestId == questId; }).FirstOrDefault();
+            return GetDatas<QuestData>().Where((questData) => questData.QuestId == questId).FirstOrDefault();
         }
         
         public IEnumerable<QuestData> GetAllQuestDatas()
@@ -155,18 +155,7 @@ namespace QuestSystem
         
         public SwitchDescriptionData GetSwitchDescriptionData(string switchId)
         {
-            var enumerableDescriptionData = GetDatas<SwitchDescriptionData>((descriptionData) => descriptionData.SwitchId == switchId);
-            if (enumerableDescriptionData == null)
-            {
-                Debug.LogError("널이라는군");
-                return null;
-            }
-            else
-            {
-                
-                Debug.LogWarning("널은아니군 " + enumerableDescriptionData.GetEnumerator().Current);
-                return null;
-            }
+            return GetDatas<SwitchDescriptionData>().Where((descriptionData) => descriptionData.SwitchId == switchId).FirstOrDefault();
         }
         
         public IEnumerable<SwitchDescriptionData> GetAllSwitchDescriptionDatas()
@@ -190,13 +179,14 @@ namespace QuestSystem
         
         public SwitchStateResultData GetSwitchStateResultData(string switchId, int state)
         {
-            return GetDatas<SwitchStateResultData>((stateResultData) => stateResultData.SwitchId == switchId && stateResultData.State == state).FirstOrDefault();
+            return GetDatas<SwitchStateResultData>().Where((stateResultData) => stateResultData.SwitchId == switchId && stateResultData.State == state).FirstOrDefault();
         }
         
         public IEnumerable<SwitchStateResultData> GetAllSwitchStateResultDatas()
         {
             return GetDatas<SwitchStateResultData>();
         }
+        
         
         //
         // SwitchComponentData
@@ -213,7 +203,7 @@ namespace QuestSystem
         
         public IEnumerable<SwitchComponentData> GetSwitchComponentDatas(string switchId, int state)
         {
-            return GetDatas<SwitchComponentData>((switchData) => switchData.SwitchId == switchId && switchData.State == state);
+            return GetDatas<SwitchComponentData>().Where((switchData) => switchData.SwitchId == switchId && switchData.State == state);
         }
         
         public IEnumerable<SwitchComponentData> GetAllSwitchComponentDatas()
@@ -240,11 +230,6 @@ namespace QuestSystem
             return t;
         }
 
-        IEnumerable<T> GetDatas<T>(Func<T, bool> func) where T : new()
-        {
-            return _connection.Table<T>().Where(data => func(data));
-        }
-        
         IEnumerable<T> GetDatas<T>() where T : new()
         {
             return _connection.Table<T>();

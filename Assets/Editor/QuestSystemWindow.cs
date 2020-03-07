@@ -11,37 +11,6 @@ namespace QuestSystem
 
         protected void OnEnable()
         {
-            if (!SQLiteManager.Instance.IsConnected)
-            {
-                SQLiteManager.Instance.Connect(PreferencesWindow.QuestSystemDatabaseName);
-            }
-            
-            bool isRefresh = false;
-            string beforeDatabaseName = DatabaseName;
-            DatabaseName = PreferencesWindow.QuestSystemDatabaseName;
-            if (string.IsNullOrEmpty(DatabaseName))
-            {
-                //결정된 디비가 없음
-                return;
-            }
-            else if (beforeDatabaseName != DatabaseName)
-            {
-                //디비가 바뀌었음
-                isRefresh = true;
-            }
-            
-            if (!SQLiteManager.Instance.IsConnected)
-            {
-                Debug.LogError("DB is Not Connect");
-                return;
-            }
-            
-            if (isRefresh)
-            {
-                //유니티에디터에 저장된 디비이름을 가져온다
-                RefreshProcess();
-            }
-
             EnableProcess();
         }
 
@@ -74,8 +43,33 @@ namespace QuestSystem
         {
             if (!SQLiteManager.Instance.IsConnected)
             {
+                SQLiteManager.Instance.Connect(PreferencesWindow.QuestSystemDatabaseName);
+            }
+            
+            bool isRefresh = false;
+            string beforeDatabaseName = DatabaseName;
+            DatabaseName = PreferencesWindow.QuestSystemDatabaseName;
+            if (string.IsNullOrEmpty(DatabaseName))
+            {
+                //결정된 디비가 없음
+                return;
+            }
+            else if (beforeDatabaseName != DatabaseName)
+            {
+                //디비가 바뀌었음
+                isRefresh = true;
+            }
+            
+            if (!SQLiteManager.Instance.IsConnected)
+            {
                 Debug.LogError("DB is Not Connect");
                 return;
+            }
+            
+            if (isRefresh)
+            {
+                //유니티에디터에 저장된 디비이름을 가져온다
+                RefreshProcess();
             }
             
             FocusProcess();

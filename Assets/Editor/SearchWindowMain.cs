@@ -79,8 +79,8 @@ namespace QuestSystem
 
         protected override void FocusProcess()
         {
-            var questDatas = SQLiteManager.Instance.GetAllQuestDatas();
-            var questDataList = questDatas.ToList();
+            var enumerableQuestData = SQLiteManager.Instance.GetAllQuestDatas();
+            var questDataList = enumerableQuestData.ToList();
             _questTab.FocusProcess(questDataList);
         }
     
