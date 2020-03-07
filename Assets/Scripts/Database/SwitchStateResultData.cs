@@ -3,7 +3,7 @@
 public class SwitchStateResultData  
 {
     [PrimaryKey, AutoIncrement] 
-    public int SwitchComponentId { get; set; }
+    public int SwitchStateResultId { get; set; }
     public string SwitchId { get; set; }
     public int State { get; set; }
     public bool Result { get; set; }

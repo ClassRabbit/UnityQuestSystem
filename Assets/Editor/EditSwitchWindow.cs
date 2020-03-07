@@ -181,22 +181,15 @@ namespace QuestSystem
                 {
                     if (GUILayout.Button("생성"))
                     {
-                        //아이디 채크
-                        if (string.IsNullOrEmpty(_descriptionData.SwitchId))
+                        string message = string.Empty;
+                        if (SaveProcess(out message))
                         {
-                            Debug.LogError("QuestId는 빈칸일 수 없다.");
+                            Debug.Log("성공 : " + message);
                         }
-//                        else if (null != SQLiteManager.Instance.GetSw(_questId))
-//                        {
-//                            Debug.LogError("중복된 QuestId");
-//                            _confirmState = EConfirmState.CreateFailOverlapId;
-//                        }
-//                        else
-//                        {
-//                            SQLiteManager.Instance.CreateQuestData(_questId, _description);
-//                            _confirmState = EConfirmState.CreateSuccess;
-//                            Debug.Log("만드는데 성공");
-//                        }
+                        else
+                        {
+                            Debug.LogError("실패 : " + message);
+                        }
                     }
                 }
             }
@@ -214,6 +207,64 @@ namespace QuestSystem
 
             var stateResultData = new SwitchStateResultData();
             _stateResultDataList.Add(stateResultData);
+        }
+
+        public bool SaveProcess(out string message)
+        {
+            var switchId = _descriptionData.SwitchId;
+            if (string.IsNullOrEmpty(switchId))
+            {
+                message = "SwitchId가 비었다.";
+                return false;
+            }
+
+            if (null != SQLiteManager.Instance.GetSwitchDescriptionData(switchId))
+            {
+                message = "중복된 SwitchId가 있습니다.";
+                return false;
+            }
+
+            for (int stateIdx = 0; stateIdx < _stateList.Count; ++stateIdx)
+            {
+                var state = _stateList[stateIdx];
+                for (int componentIdx = 0; componentIdx < state.Count; ++componentIdx)
+                {
+                    var stateComponent = state[componentIdx];
+                    if (string.IsNullOrEmpty(stateComponent.QuestId))
+                    {
+                        message = $"QuestId가 비어있습니다 : 상태 {stateIdx} - {componentIdx}번 ";
+                        return false;
+                    }
+                    
+                    if (null == SQLiteManager.Instance.GetQuestData(stateComponent.QuestId))
+                    {
+                        message = $"등록되지 않은 QuestId입니다. : 상태 {stateIdx} - {componentIdx}번 ";
+                        return false;
+                    }
+
+                    stateComponent.SwitchId = switchId;
+                    stateComponent.State = stateIdx;
+                    stateComponent.Order = componentIdx;
+                }
+            }
+            
+            SQLiteManager.Instance.CreateSwitchDescriptionData(_descriptionData);
+            
+            foreach (var state in _stateList)
+            {
+                foreach (var stateComponent in state)
+                {
+                    SQLiteManager.Instance.CreateSwitchComponentData(stateComponent);
+                }
+            }
+
+            foreach (var stateResult in _stateResultDataList)
+            {
+                SQLiteManager.Instance.CreateSwitchStateResultData(stateResult);
+            }
+
+            message = "완료되었습니다.";
+            return true;
         }
 
 

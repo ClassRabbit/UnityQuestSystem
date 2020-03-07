@@ -18,8 +18,7 @@ namespace QuestSystem
         }
         
         private int KSpace = 10;
-        private string _questId = string.Empty;
-        private string _description = string.Empty;
+        QuestData _questData = new QuestData();
         
         private EConfirmState _confirmState = EConfirmState.None;
         
@@ -43,9 +42,13 @@ namespace QuestSystem
 
         internal void UpdateQuestData(QuestData questData)
         {
+            if (questData == null)
+            {
+                return;
+            }
+            
             IsUpdate = true;
-            _questId = questData.QuestId;
-            _description = questData.Description;
+            _questData = questData;
         }
 
         protected override void GUIProcess()
@@ -64,7 +67,7 @@ namespace QuestSystem
                     EditorGUI.BeginDisabledGroup(IsUpdate);
                     {
                         EditorGUILayout.PrefixLabel("QuestId ");
-                        _questId = GUILayout.TextField(_questId);
+                        _questData.QuestId = GUILayout.TextField(_questData.QuestId);
                     }
                     EditorGUI.EndDisabledGroup();
                 }
@@ -73,7 +76,7 @@ namespace QuestSystem
                 //퀘스트 설명
                 GUILayout.Space(KSpace);
                 GUILayout.Label("Description ");
-                _description = GUILayout.TextArea(_description, GUILayout.Height(position.height - 125 - KSpace));
+                _questData.Description = GUILayout.TextArea(_questData.Description, GUILayout.Height(position.height - 125 - KSpace));
                 GUILayout.Space(KSpace);
             
                 GUILayout.BeginHorizontal();
@@ -84,7 +87,7 @@ namespace QuestSystem
                 
                     if (GUILayout.Button("Update"))
                     {
-                        SQLiteManager.Instance.UpdateQuestData(_questId, _description);
+                        SQLiteManager.Instance.UpdateQuestData(_questData);
                         _confirmState = EConfirmState.UpdateSuccess;
                         Debug.Log("업데이트 성공");
                     }
@@ -100,19 +103,19 @@ namespace QuestSystem
                     if (GUILayout.Button("Create"))
                     {
                         //아이디 채크
-                        if (string.IsNullOrEmpty(_questId))
+                        if (string.IsNullOrEmpty(_questData.QuestId))
                         {
                             Debug.LogError("QuestId는 빈칸일 수 없다.");
                             _confirmState = EConfirmState.CreateFailEmptyId;
                         }
-                        else if (null != SQLiteManager.Instance.GetQuestData(_questId))
+                        else if (null != SQLiteManager.Instance.GetQuestData(_questData.QuestId))
                         {
                             Debug.LogError("중복된 QuestId");
                             _confirmState = EConfirmState.CreateFailOverlapId;
                         }
                         else
                         {
-                            SQLiteManager.Instance.CreateQuestData(_questId, _description);
+                            SQLiteManager.Instance.CreateQuestData(_questData);
                             _confirmState = EConfirmState.CreateSuccess;
                             Debug.Log("만드는데 성공");
                         }
