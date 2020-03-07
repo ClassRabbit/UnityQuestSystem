@@ -41,14 +41,16 @@ namespace QuestSystem
 
         private void OnFocus()
         {
+            string beforeDatabaseName = DatabaseName;
+            DatabaseName = PreferencesWindow.QuestSystemDatabaseName;
+            
             if (!SQLiteManager.Instance.IsConnected)
             {
-                SQLiteManager.Instance.Connect(PreferencesWindow.QuestSystemDatabaseName);
+                SQLiteManager.Instance.Connect(DatabaseName);
             }
             
             bool isRefresh = false;
-            string beforeDatabaseName = DatabaseName;
-            DatabaseName = PreferencesWindow.QuestSystemDatabaseName;
+            
             if (string.IsNullOrEmpty(DatabaseName))
             {
                 //결정된 디비가 없음
@@ -58,17 +60,17 @@ namespace QuestSystem
             {
                 //디비가 바뀌었음
                 isRefresh = true;
+                SQLiteManager.Instance.Connect(DatabaseName);
             }
             
             if (!SQLiteManager.Instance.IsConnected)
             {
-                Debug.LogError("DB is Not Connect");
+                Debug.LogError("SQLite is Not Connect");
                 return;
             }
             
             if (isRefresh)
             {
-                //유니티에디터에 저장된 디비이름을 가져온다
                 RefreshProcess();
             }
             

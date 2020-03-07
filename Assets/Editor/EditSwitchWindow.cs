@@ -238,7 +238,7 @@ namespace QuestSystem
                     
                     if (null == SQLiteManager.Instance.GetQuestData(stateComponent.QuestId))
                     {
-                        message = $"등록되지 않은 QuestId입니다. : 상태 {stateIdx} - {componentIdx}번 ";
+                        message = $"등록되지 않은 QuestId입니다. : 상태 {stateIdx} - {componentIdx}번 - {stateComponent.QuestId}";
                         return false;
                     }
 
