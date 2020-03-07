@@ -4,7 +4,7 @@ using UnityEditor;
 namespace QuestSystem
 {
     
-    public class EditQuestWindow : QuestSystemWindow
+    public class EditQuestWindow : QuestSystemEditWindow
     {
         enum EConfirmState
         {
@@ -21,11 +21,9 @@ namespace QuestSystem
         private string _questId = string.Empty;
         private string _description = string.Empty;
         
-        private bool IsUpdate = false;
         private EConfirmState _confirmState = EConfirmState.None;
         
-        public Rect windowRect = new Rect(0, 0, 400, 300);
-        void ConfirmWindowProcess(int unusedWindowID)
+        protected override void ConfirmWindowProcess()
         {
             GUILayout.Label("수정되었습니다.");
             if (GUILayout.Button("Confirm"))
@@ -60,7 +58,7 @@ namespace QuestSystem
             
             EditorGUI.BeginDisabledGroup(_confirmState != EConfirmState.None);
             {
-            
+                //퀘스트 아이디
                 GUILayout.BeginHorizontal();
                 {
                     EditorGUI.BeginDisabledGroup(IsUpdate);
@@ -72,8 +70,8 @@ namespace QuestSystem
                 }
                 GUILayout.EndHorizontal();
                 
+                //퀘스트 설명
                 GUILayout.Space(KSpace);
-                
                 GUILayout.Label("Description ");
                 _description = GUILayout.TextArea(_description, GUILayout.Height(position.height - 125 - KSpace));
                 GUILayout.Space(KSpace);
@@ -123,18 +121,9 @@ namespace QuestSystem
             }
             EditorGUI.EndDisabledGroup();
 
-            
-            
-            
             if (_confirmState != EConfirmState.None)
             {
-                Rect rect = new Rect(0, 0, position.width, position.height);
-                EditorGUI.DrawRect(rect, new Color32(0, 0, 0, 122));
-                BeginWindows();
-                windowRect.x = (position.width - windowRect.width) / 2;
-                windowRect.y = (position.height - windowRect.height) / 2;
-                windowRect = GUILayout.Window(1, windowRect, ConfirmWindowProcess, "");
-                EndWindows();
+                DrawConfirmWindow(string.Empty);
             }
             
             GUILayout.Space(position.width * 0.2f);

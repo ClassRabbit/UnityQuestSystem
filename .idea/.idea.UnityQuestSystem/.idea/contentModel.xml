@@ -24,12 +24,9 @@
             <e p="QuestData.cs" t="Include" />
             <e p="SQLite.cs" t="Include" />
             <e p="SQLiteManager.cs" t="Include" />
-          </e>
-          <e p="SQLiteSample" t="Include">
-            <e p="CreateDBScript.cs" t="Include" />
-            <e p="DataService.cs" t="Include" />
-            <e p="ExistingDBScript.cs" t="Include" />
-            <e p="Person.cs" t="Include" />
+            <e p="SwitchComponentData.cs" t="Include" />
+            <e p="SwitchDescriptionData.cs" t="Include" />
+            <e p="SwitchStateResultData.cs" t="Include" />
           </e>
         </e>
       </e>

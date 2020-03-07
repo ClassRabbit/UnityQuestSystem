@@ -25,7 +25,6 @@ namespace QuestSystem
 
         protected override void EnableProcess()
         {
-            Debug.LogError("Enable");
             if (_questTab == null)
             {
                 _questTab = new SearchWindowQuestTab();
