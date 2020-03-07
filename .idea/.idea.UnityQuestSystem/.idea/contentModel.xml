@@ -13,9 +13,11 @@
           <e p="EditSwitchWindow.cs" t="Include" />
           <e p="GUITest.cs" t="Include" />
           <e p="PreferencesWindow.cs" t="Include" />
+          <e p="QuestSystemEditWindow.cs" t="Include" />
           <e p="QuestSystemWindow.cs" t="Include" />
           <e p="SearchWindowMain.cs" t="Include" />
           <e p="SearchWindowQuestTab.cs" t="Include" />
+          <e p="SearchWindowSwitchTab.cs" t="Include" />
           <e p="SQLiteConnector.cs" t="Include" />
           <e p="TestWindow.cs" t="Include" />
         </e>
