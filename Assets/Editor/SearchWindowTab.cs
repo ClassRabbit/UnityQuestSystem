@@ -44,9 +44,15 @@ namespace QuestSystem
         protected List<int> ShowingPageIndexList { get; set; }  = new List<int>();
         protected int CurrentPageIndex { get; set; }
         protected virtual int MaxPageIndex => 0;
+        
+        
+        //조회
+        protected virtual void ActionSearch()
+        {
+        }
 
 
-        internal virtual void FocusProcess(List<T> dataList)
+        internal void FocusProcess(List<T> dataList)
         {
             T selectedData = null;
             if (SelectedDataIndex.HasValue)
@@ -57,7 +63,7 @@ namespace QuestSystem
 
             if (IsSearch)
             {
-                RefreshSearchResultList();
+                ActionSearch();
             }
             if (selectedData != null)
             {
@@ -86,27 +92,6 @@ namespace QuestSystem
         {
             return true;
         }
-        
-        
-        //조회
-        void RefreshSearchResultList()
-        {
-            SearchResultDataList = new List<T>();
-            foreach(var data in DataList)
-            {
-                if (CompareSearchText(data))
-                {
-                    SearchResultDataList.Add(data);
-                }
-            }
-        }
-
-        protected virtual bool CompareSearchText(T data)
-        {
-            return true;
-        }
-        
-        
 
 
         protected void RefreshPageList()
@@ -145,6 +130,13 @@ namespace QuestSystem
             {
                 ShowingPageIndexList.Add(MaxPageIndex);
             }
+
+            RefreshPageListProcess();
+        }
+
+        protected virtual void RefreshPageListProcess()
+        {
+            
         }
 
         internal void GUIProcess(Rect tabPosition)
@@ -180,15 +172,10 @@ namespace QuestSystem
 
                 if (GUILayout.Button("조회", GUILayout.Width(100)))
                 {
-                    if (string.IsNullOrEmpty(SearchText))
-                    {
-                        IsSearch = false;
-                    }
-                    else
-                    {
-                        IsSearch = true;
-                        RefreshSearchResultList();
-                    }
+                    SelectedDataIndex = null;
+                    IsSearch = !string.IsNullOrEmpty(SearchText);
+                    
+                    ActionSearch();
                     
                     RefreshPageList();
                 }

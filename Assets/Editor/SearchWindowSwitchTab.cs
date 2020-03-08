@@ -23,15 +23,13 @@ namespace QuestSystem
         {
         }
 
-        internal override void FocusProcess(List<SwitchDescriptionData> dataList)
+        protected override void ActionSearch()
         {
-            base.FocusProcess(dataList);
+            if (IsSearch)
+            {
+                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(SearchText).ToList();
+            }
             SetPageData();
-        }
-
-        protected override bool CompareSearchText(SwitchDescriptionData data)
-        {
-            return (data.SwitchId.Contains(SearchText) || data.Description.Contains(SearchText));
         }
 
 
@@ -81,8 +79,8 @@ namespace QuestSystem
             if (targetDataList != null)
             {
                 SwitchDescriptionData selectedDescriptionData = SelectedDataIndex.HasValue ? targetDataList[SelectedDataIndex.Value] : null;
-                int firstPageSwitchIdx = KSwitchPerPage * CurrentPageIndex;
                 
+                int firstPageSwitchIdx = KSwitchPerPage * CurrentPageIndex;
                 for (int switchIdx = firstPageSwitchIdx;
                     switchIdx < targetDataList.Count && switchIdx < KSwitchPerPage * (CurrentPageIndex + 1);
                     ++switchIdx)
@@ -100,9 +98,35 @@ namespace QuestSystem
                     {
                         GUILayout.BeginHorizontal("box");
                     }
-
-                    var componentList = _currentPageComponentDataList[pageSwitchIdx];
-                    var resultList = _currentPageStateResultDataList[pageSwitchIdx];
+                    
+//                    var componentList = _currentPageComponentDataList[pageSwitchIdx];
+//                    var resultList = _currentPageStateResultDataList[pageSwitchIdx];
+                    
+                    List<SwitchComponentData> componentList = null;
+                    List<SwitchStateResultData> resultList = null;
+                    try
+                    {
+                        componentList = _currentPageComponentDataList[pageSwitchIdx];
+                        resultList = _currentPageStateResultDataList[pageSwitchIdx];
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("--------------------");
+                        Debug.LogWarning("CurrentPageIndex " + CurrentPageIndex);
+                        
+                        Debug.LogError("firstPageSwitchIdx " + firstPageSwitchIdx);
+                        Debug.LogError("switchIdx " + switchIdx);
+                        
+                        Debug.LogWarning("pageSwitchIdx " + pageSwitchIdx);
+                        Debug.LogWarning("_currentPageComponentDataList.Count " + _currentPageComponentDataList.Count);
+                        Debug.LogWarning("_currentPageStateResultDataList " + _currentPageStateResultDataList.Count);
+                        
+                        
+                        Debug.LogWarning("targetDataList " + targetDataList.Count);
+                        Debug.Log("--------------------");
+                        return;
+                    }
+                    
                     GUILayout.BeginVertical();
                     if (GUILayout.Button(descriptionData.SwitchId, "FrameBox",
                         GUILayout.Width(ColumnHeader.GetColumn(0).width - 10), GUILayout.Height(25 * resultList.Count + 4 * (resultList.Count - 1))))
@@ -155,6 +179,11 @@ namespace QuestSystem
                     GUILayout.EndHorizontal();
                 }
             }
+        }
+        
+        protected override void RefreshPageListProcess()
+        {
+            SetPageData();
         }
 
 

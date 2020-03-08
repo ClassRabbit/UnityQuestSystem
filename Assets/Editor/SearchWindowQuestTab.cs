@@ -19,9 +19,19 @@ namespace QuestSystem
             
         }
 
-        protected override bool CompareSearchText(QuestData data)
+        protected override void ActionSearch()
         {
-            return (data.QuestId.Contains(SearchText) || data.Description.Contains(SearchText));
+            if (IsSearch)
+            {
+                SearchResultDataList = new List<QuestData>();
+                foreach(var data in DataList)
+                {
+                    if (data.QuestId.Contains(SearchText) || data.Description.Contains(SearchText))
+                    {
+                        SearchResultDataList.Add(data);
+                    }
+                }
+            }
         }
 
 

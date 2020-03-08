@@ -162,6 +162,18 @@ namespace QuestSystem
         {
             return GetDatas<SwitchDescriptionData>();
         }
+
+
+        private const string KQueryGetSearchSwitchDescriptionDatas = @"SELECT * FROM SwitchDescriptionData 
+                WHERE SwitchId IN 
+                    (SELECT DISTINCT SwitchId FROM SwitchComponentData 
+                        WHERE QuestId LIKE '%{0}%' 
+                        OR SwitchId LIKE '%{0}%')";
+
+        public IEnumerable<SwitchDescriptionData> GetSearchSwitchDescriptionDatas(string searchText)
+        {
+            return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSearchSwitchDescriptionDatas, searchText));
+        }
         
         
         //
