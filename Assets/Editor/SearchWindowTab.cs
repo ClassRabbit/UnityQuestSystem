@@ -39,7 +39,22 @@ namespace QuestSystem
         
         //선택된 Row
         protected int? SelectedDataIndex { get; set; }
-        
+
+        private Texture2D _texturUpdateIcon = null;
+
+        public Texture2D TexturUpdateIcon
+        {
+            get
+            {
+                if (_texturUpdateIcon == null)
+                {
+                    _texturUpdateIcon = (Texture2D)EditorGUIUtility.Load("Icon_Update.png");
+                }
+
+                return _texturUpdateIcon;
+            }
+        }
+
         //페이지
         protected List<int> ShowingPageIndexList { get; set; }  = new List<int>();
         protected int CurrentPageIndex { get; set; }

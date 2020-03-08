@@ -126,6 +126,12 @@ namespace QuestSystem
         {
             return UpdateData(questData);
         }
+        
+        public QuestData DeleteQuestData(QuestData questData)
+        {
+            return DeleteData(questData);
+        }
+
 
         public QuestData GetQuestData(string questId)
         {
@@ -240,6 +246,15 @@ namespace QuestSystem
             _connection.RunInTransaction(() =>
             {
                 _connection.Update(t);
+            });
+            return t;
+        }
+        
+        T DeleteData<T>(T t)
+        {
+            _connection.RunInTransaction(() =>
+            {
+                _connection.Delete(t);
             });
             return t;
         }

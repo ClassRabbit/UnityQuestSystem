@@ -22,6 +22,11 @@ namespace QuestSystem
         internal void EnableProcess()
         {
         }
+        
+        protected override bool CompareData(SwitchDescriptionData ta, SwitchDescriptionData tb)
+        {
+            return ta.SwitchId == tb.SwitchId;
+        }
 
         protected override void ActionSearch()
         {
@@ -99,34 +104,9 @@ namespace QuestSystem
                         GUILayout.BeginHorizontal("box");
                     }
                     
-//                    var componentList = _currentPageComponentDataList[pageSwitchIdx];
-//                    var resultList = _currentPageStateResultDataList[pageSwitchIdx];
-                    
-                    List<SwitchComponentData> componentList = null;
-                    List<SwitchStateResultData> resultList = null;
-                    try
-                    {
-                        componentList = _currentPageComponentDataList[pageSwitchIdx];
-                        resultList = _currentPageStateResultDataList[pageSwitchIdx];
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log("--------------------");
-                        Debug.LogWarning("CurrentPageIndex " + CurrentPageIndex);
-                        
-                        Debug.LogError("firstPageSwitchIdx " + firstPageSwitchIdx);
-                        Debug.LogError("switchIdx " + switchIdx);
-                        
-                        Debug.LogWarning("pageSwitchIdx " + pageSwitchIdx);
-                        Debug.LogWarning("_currentPageComponentDataList.Count " + _currentPageComponentDataList.Count);
-                        Debug.LogWarning("_currentPageStateResultDataList " + _currentPageStateResultDataList.Count);
-                        
-                        
-                        Debug.LogWarning("targetDataList " + targetDataList.Count);
-                        Debug.Log("--------------------");
-                        return;
-                    }
-                    
+                    var componentList = _currentPageComponentDataList[pageSwitchIdx];
+                    var resultList = _currentPageStateResultDataList[pageSwitchIdx];
+
                     GUILayout.BeginVertical();
                     if (GUILayout.Button(descriptionData.SwitchId, "FrameBox",
                         GUILayout.Width(ColumnHeader.GetColumn(0).width - 10), GUILayout.Height(25 * resultList.Count + 4 * (resultList.Count - 1))))

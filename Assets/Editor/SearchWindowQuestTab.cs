@@ -18,6 +18,11 @@ namespace QuestSystem
         {
             
         }
+        
+        protected override bool CompareData(QuestData ta, QuestData tb)
+        {
+            return ta.QuestId == tb.QuestId;
+        }
 
         protected override void ActionSearch()
         {
@@ -81,15 +86,30 @@ namespace QuestSystem
             {
                 var questData = TargetDataList[SelectedDataIndex.Value];
                 GUILayout.Space(3);
-                GUILayout.Label(questData.QuestId);
-                GUILayout.Space(3);
-                GUILayout.Label(questData.Description);
-                if (GUILayout.Button("Edit"))
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Space(8);
+                int beforeFontSize = EditorStyles.label.fontSize;
+                EditorStyles.label.fontSize = 20;
+                GUILayout.Label(questData.QuestId, EditorStyles.label);
+                EditorStyles.label.fontSize = beforeFontSize;
+                GUILayout.EndVertical();
+                
+                if (GUILayout.Button(TexturUpdateIcon, GUILayout.Width(40)))
                 {
                     EditQuestWindow window = (EditQuestWindow)EditorWindow.GetWindow(typeof(EditQuestWindow));
                     window.Show();
                     window.UpdateQuestData(questData);
                 }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(3);
+
+                bool beforeWordWrap = EditorStyles.label.wordWrap;
+                EditorStyles.label.wordWrap = true;
+                GUILayout.Label(questData.Description, EditorStyles.label);
+                EditorStyles.label.wordWrap = beforeWordWrap;
+                
+                
             }
         }
 

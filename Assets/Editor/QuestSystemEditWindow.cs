@@ -6,31 +6,20 @@ namespace QuestSystem
     
     public abstract class QuestSystemEditWindow : QuestSystemWindow
     {
+        protected bool IsClose { get; set; } = false;
         protected bool IsUpdate { get; set; } = false;
         private Rect _windowRect = new Rect(0, 0, 400, 300);
         protected Rect WindowRect => _windowRect;
-        
-        
+
         protected void ConfirmWindow(int unusedWindowID)
         {
-            
+            ConfirmWindowProcess();
         }
 
         protected virtual void ConfirmWindowProcess()
         {
-            
         }
         
-        
-        
-        // Add menu named "My Window" to the Window menu
-        [MenuItem("Window/TestWindow")]
-        static void Init()
-        {
-            // Get existing open window or if none, make a new one:
-            TestWindow window = (TestWindow)EditorWindow.GetWindow(typeof(TestWindow));
-            window.Show();
-        }
 
         protected void DrawConfirmWindow(string windowName)
         {

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEditor;
 
 namespace QuestSystem
@@ -24,10 +26,43 @@ namespace QuestSystem
         
         protected override void ConfirmWindowProcess()
         {
-            GUILayout.Label("수정되었습니다.");
+            string confirmText = String.Empty;
+            switch (_confirmState)
+            {
+                case EConfirmState.CreateSuccess:
+                    confirmText = "생성되었습니다.";
+                    break;
+                case EConfirmState.CreateFailEmptyId:
+                    confirmText = "QuestId가 입력되지 않았습니다.";
+                    break;
+                case EConfirmState.CreateFailOverlapId:
+                    confirmText = "QuestId가 중복되었습니다.";
+                    break;
+                case EConfirmState.UpdateSuccess:
+                    confirmText = "수정되었습니다.";
+                    break;
+                case EConfirmState.DeleteSuccess:
+                    confirmText = "삭제되었습니다.";
+                    break;
+                case EConfirmState.DeleteFailUseSwitch:
+                    confirmText = "SwitchData에서 사용 중인 QuestData는 삭제할 수 없습니다.";
+                    break;
+            }
+            GUILayout.Label(confirmText);
             if (GUILayout.Button("Confirm"))
             {
+                switch (_confirmState)
+                {
+                    case EConfirmState.CreateSuccess:
+                        _questData.QuestId = string.Empty;
+                        _questData.Description = string.Empty;
+                        break;
+                    case EConfirmState.DeleteSuccess:
+                        IsClose = true;
+                        return;
+                }
                 _confirmState = EConfirmState.None;
+                
             }
         }
     
@@ -53,6 +88,12 @@ namespace QuestSystem
 
         protected override void GUIProcess()
         {
+            if (IsClose)
+            {
+                this.Close();
+                return;
+            }
+            
             GUILayout.Space(KSpace);
             
             GUILayout.Label("Create QuestData", "DefaultCenteredLargeText");
@@ -85,39 +126,42 @@ namespace QuestSystem
                 if (IsUpdate)
                 {
                 
-                    if (GUILayout.Button("Update"))
+                    if (GUILayout.Button("수정"))
                     {
                         SQLiteManager.Instance.UpdateQuestData(_questData);
                         _confirmState = EConfirmState.UpdateSuccess;
-                        Debug.Log("업데이트 성공");
                     }
-                    if (GUILayout.Button("Delete"))
+                    if (GUILayout.Button("삭제"))
                     {
                         //SwitchData 구성요소인지 체크
-                        
-                        _confirmState = EConfirmState.DeleteSuccess;
+                        if (SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(_questData.QuestId).Count() != 0)
+                        {
+                            _confirmState = EConfirmState.DeleteFailUseSwitch;
+                        }
+                        else
+                        {
+                            SQLiteManager.Instance.DeleteQuestData(_questData);
+                            _confirmState = EConfirmState.DeleteSuccess;
+                        }
                     }
                 }
                 else
                 {
-                    if (GUILayout.Button("Create"))
+                    if (GUILayout.Button("생성"))
                     {
                         //아이디 채크
                         if (string.IsNullOrEmpty(_questData.QuestId))
                         {
-                            Debug.LogError("QuestId는 빈칸일 수 없다.");
                             _confirmState = EConfirmState.CreateFailEmptyId;
                         }
                         else if (null != SQLiteManager.Instance.GetQuestData(_questData.QuestId))
                         {
-                            Debug.LogError("중복된 QuestId");
                             _confirmState = EConfirmState.CreateFailOverlapId;
                         }
                         else
                         {
                             SQLiteManager.Instance.CreateQuestData(_questData);
                             _confirmState = EConfirmState.CreateSuccess;
-                            Debug.Log("만드는데 성공");
                         }
                     }
                 }
