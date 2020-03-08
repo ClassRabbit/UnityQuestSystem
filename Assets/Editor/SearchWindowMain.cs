@@ -21,20 +21,11 @@ namespace QuestSystem
     
         private EMode _selectedMode = EMode.Quest;
 
-        private SearchWindowQuestTab _questTab = null;
-
+        private SearchWindowQuestTab _questTab = new SearchWindowQuestTab();
+        private SearchWindowSwitchTab _switchTab = new SearchWindowSwitchTab();
+        
         protected override void EnableProcess()
         {
-            if (_questTab == null)
-            {
-                _questTab = new SearchWindowQuestTab();
-            }
-            
-            if (_questTab == null)
-            {
-                _questTab = new SearchWindowQuestTab();
-            }
-            
             switch(_selectedMode)
             {
                 case EMode.Quest:
@@ -42,9 +33,9 @@ namespace QuestSystem
                     break;
                 case EMode.Switch:
                 default:
+                    _switchTab.EnableProcess();
                     break;
             }
-            
         } 
     
     
@@ -73,6 +64,7 @@ namespace QuestSystem
                     break;
                 case EMode.Switch:
                 default:
+                    _switchTab.GUIProcess(GetTabPosition());
                     break;
             }
         }
@@ -82,6 +74,10 @@ namespace QuestSystem
             var enumerableQuestData = SQLiteManager.Instance.GetAllQuestDatas();
             var questDataList = enumerableQuestData.ToList();
             _questTab.FocusProcess(questDataList);
+            
+            var enumerableSwitchDescriptionData = SQLiteManager.Instance.GetAllSwitchDescriptionDatas();
+            var switchDescriptionDataList = enumerableSwitchDescriptionData.ToList();
+            _switchTab.FocusProcess(switchDescriptionDataList);
         }
     
     
@@ -91,10 +87,6 @@ namespace QuestSystem
             Rect tabPosition = new Rect(0, padding, position.width, position.height - padding);
             return tabPosition;
         }
-        
-
-
-    
     
     }
 }

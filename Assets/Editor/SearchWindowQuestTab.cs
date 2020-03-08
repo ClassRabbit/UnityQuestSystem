@@ -7,76 +7,27 @@ using System.Collections.Generic;
 namespace QuestSystem
 {
 
-    internal class SearchWindowQuestTab : SearchWindowTab
+    internal class SearchWindowQuestTab : SearchWindowTab<QuestData>
     {
         private const int KQuestPerPage = 100;
-        
-        private List<QuestData> _questDataList;
-        private List<QuestData> _searchResultQuestDataList;
-        List<QuestData> TargetQuestDataList => IsSearch ? _searchResultQuestDataList : _questDataList;
-        
-        protected override int MaxPageIndex => (TargetQuestDataList.Count - 1) / KQuestPerPage;
+
+        protected override int MaxPageIndex => (TargetDataList.Count - 1) / KQuestPerPage;
 
 
         internal void EnableProcess()
         {
             
         }
-        
-        internal void FocusProcess(List<QuestData> questDataList)
+
+        protected override bool CompareSearchText(QuestData data)
         {
-            QuestData selectedQuestData = null;
-            if (SelectedDataIndex.HasValue)
-            {
-                selectedQuestData = _questDataList[SelectedDataIndex.Value];
-            }
-            _questDataList = questDataList;
-
-            if (IsSearch)
-            {
-                RefreshSearchResultList();
-            }
-            if (selectedQuestData != null)
-            {
-                bool isFound = false;
-                for (int i = 0; i < TargetQuestDataList.Count; ++i)
-                {
-                    if (TargetQuestDataList[i].QuestId == selectedQuestData.QuestId)
-                    {
-                        isFound = true;
-                        SelectedDataIndex = i;
-                        break;
-                    }
-                }
-
-                if (!isFound)
-                {
-                    SelectedDataIndex = null;
-                }
-            }
-            
-            RefreshPageList();
+            return (data.QuestId.Contains(SearchText) || data.Description.Contains(SearchText));
         }
-        
-        
-        protected override void RefreshSearchResultList()
-        {
-            _searchResultQuestDataList = new List<QuestData>();
-            foreach(var questData in _questDataList)
-            {
-                if (questData.QuestId.Contains(SearchText) || questData.Description.Contains(SearchText))
-                {
-                    _searchResultQuestDataList.Add(questData);
-                }
-            }
-        }
-
-        
 
 
         protected override void DrawTableProcess()
         {
-            List<QuestData> targetQuestDataList = TargetQuestDataList;
+            List<QuestData> targetQuestDataList = TargetDataList;
             
             if (targetQuestDataList != null)
             {
@@ -118,7 +69,7 @@ namespace QuestSystem
         {
             if (SelectedDataIndex.HasValue)
             {
-                var questData = TargetQuestDataList[SelectedDataIndex.Value];
+                var questData = TargetDataList[SelectedDataIndex.Value];
                 GUILayout.Space(3);
                 GUILayout.Label(questData.QuestId);
                 GUILayout.Space(3);

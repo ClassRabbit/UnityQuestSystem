@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 namespace QuestSystem
 {
-
-    internal abstract class SearchWindowTab
+    
+    internal abstract class SearchWindowTab<T> where T : class
     {
 
         
@@ -16,6 +16,10 @@ namespace QuestSystem
         private const int KPageAreaHeight = 100;
         private const int KTopAreaHeight = 60;
         private const int KTabPadding = 10;
+
+        protected List<T> DataList { get; set; }
+        protected List<T> SearchResultDataList { get; set; }
+        protected List<T> TargetDataList => IsSearch ? SearchResultDataList : DataList;
         
         //텝의 영역
         protected Rect TabPosition { get; set; }
@@ -42,14 +46,67 @@ namespace QuestSystem
         protected virtual int MaxPageIndex => 0;
 
 
-        protected virtual void Initialize()
+        internal virtual void FocusProcess(List<T> dataList)
         {
+            T selectedData = null;
+            if (SelectedDataIndex.HasValue)
+            {
+                selectedData = DataList[SelectedDataIndex.Value];
+            }
+            DataList = dataList;
+
+            if (IsSearch)
+            {
+                RefreshSearchResultList();
+            }
+            if (selectedData != null)
+            {
+                bool isFound = false;
+                var targetDataList = TargetDataList;
+                for (int i = 0; i < targetDataList.Count; ++i)
+                {
+                    if (CompareData(selectedData, targetDataList[i]))
+                    {
+                        isFound = true;
+                        SelectedDataIndex = i;
+                        break;
+                    }
+                }
+
+                if (!isFound)
+                {
+                    SelectedDataIndex = null;
+                }
+            }
             
+            RefreshPageList();
         }
 
-        protected virtual void RefreshSearchResultList()
+        protected virtual bool CompareData(T ta, T tb)
         {
+            return true;
         }
+        
+        
+        //조회
+        void RefreshSearchResultList()
+        {
+            SearchResultDataList = new List<T>();
+            foreach(var data in DataList)
+            {
+                if (CompareSearchText(data))
+                {
+                    SearchResultDataList.Add(data);
+                }
+            }
+        }
+
+        protected virtual bool CompareSearchText(T data)
+        {
+            return true;
+        }
+        
+        
 
 
         protected void RefreshPageList()
@@ -181,32 +238,37 @@ namespace QuestSystem
             bool isChangingPage = false;
             GUILayout.BeginHorizontal();
             GUILayout.Space(TabPosition.width * 0.1f);
-            
-            MakePageButton(CurrentPageIndex == 0, "<", 
-                () => {
-                    --CurrentPageIndex;
-                    isChangingPage = true;
-                });
-            foreach (var pageIndex in ShowingPageIndexList)
+
+            if (TargetDataList != null)
             {
-                if (KSkipPageIndex == pageIndex)
+                MakePageButton(CurrentPageIndex == 0, "<", 
+                    () => {
+                        --CurrentPageIndex;
+                        isChangingPage = true;
+                    });
+                foreach (var pageIndex in ShowingPageIndexList)
                 {
-                    MakePageButton(true, "...", () => { });
+                    if (KSkipPageIndex == pageIndex)
+                    {
+                        MakePageButton(true, "...", () => { });
+                    }
+                    else
+                    {
+                        MakePageButton(pageIndex == CurrentPageIndex, (pageIndex + 1).ToString(), 
+                            () => {
+                                CurrentPageIndex = pageIndex;
+                                isChangingPage = true;
+                            });
+                    }
                 }
-                else
-                {
-                    MakePageButton(pageIndex == CurrentPageIndex, (pageIndex + 1).ToString(), 
-                        () => {
-                            CurrentPageIndex = pageIndex;
-                            isChangingPage = true;
-                        });
-                }
+                MakePageButton(CurrentPageIndex == MaxPageIndex, ">", 
+                    () => {
+                        ++CurrentPageIndex;
+                        isChangingPage = true;
+                    });
             }
-            MakePageButton(CurrentPageIndex == MaxPageIndex, ">", 
-                () => {
-                    ++CurrentPageIndex;
-                    isChangingPage = true;
-                });
+            
+            
             GUILayout.Space(TabPosition.width * 0.1f);
             GUILayout.EndHorizontal();
 

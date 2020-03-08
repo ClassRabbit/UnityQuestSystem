@@ -19,7 +19,6 @@ namespace QuestSystem
         
         private EConfirmState _confirmState = EConfirmState.None;
         private readonly string[] operTexts = {"AND", "OR"};
-        private readonly string[] resultTexts = {"FALSE", "TRUE"};
 
         private int _stateIndex = 0;
 
@@ -28,11 +27,6 @@ namespace QuestSystem
             if (_stateList.Count == 0)
             {
                 AddState();
-            }
-
-            if (_stateResultDataList.Count == 0)
-            {
-                _stateResultDataList.Add(new SwitchStateResultData());
             }
         }
         
@@ -125,7 +119,7 @@ namespace QuestSystem
 //                Debug.LogWarning("_stateIndex : " + _stateIndex);
 //                Debug.LogError("_stateResultDataList.Count : " + _stateResultDataList.Count);
 //                Debug.LogWarning("_stateResultDataList[_stateIndex] : " + _stateResultDataList[_stateIndex]);
-                var resultText = _stateResultDataList[_stateIndex].Result ? resultTexts[1] : resultTexts[0];
+                var resultText = _stateResultDataList[_stateIndex].Result.ToString();
                 if (GUILayout.Button(resultText, "GroupBox", GUILayout.Width(100)))
                 {
                     _stateResultDataList[_stateIndex].Result = !_stateResultDataList[_stateIndex].Result;
@@ -202,6 +196,7 @@ namespace QuestSystem
         {
             var state = new List<SwitchComponentData>();
             var stateComponent = new SwitchComponentData();
+            stateComponent.Operator = "";
             state.Add(stateComponent);
             _stateList.Add(state);
 
@@ -258,8 +253,11 @@ namespace QuestSystem
                 }
             }
 
-            foreach (var stateResult in _stateResultDataList)
+            for (int stateIdx = 0; stateIdx < _stateResultDataList.Count; ++stateIdx)
             {
+                var stateResult = _stateResultDataList[stateIdx];
+                stateResult.SwitchId = switchId;
+                stateResult.State = stateIdx;
                 SQLiteManager.Instance.CreateSwitchStateResultData(stateResult);
             }
 

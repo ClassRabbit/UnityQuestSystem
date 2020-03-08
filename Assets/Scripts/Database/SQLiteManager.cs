@@ -177,9 +177,10 @@ namespace QuestSystem
             return UpdateData(stateResultData);
         }
         
-        public SwitchStateResultData GetSwitchStateResultData(string switchId, int state)
+        public IEnumerable<SwitchStateResultData> GetSwitchStateResultData(string switchId)
         {
-            return GetDatas<SwitchStateResultData>().Where((stateResultData) => stateResultData.SwitchId == switchId && stateResultData.State == state).FirstOrDefault();
+            return GetDatas<SwitchStateResultData>().Where((stateResultData) => stateResultData.SwitchId == switchId)
+                .OrderBy((switchData) => switchData.State);
         }
         
         public IEnumerable<SwitchStateResultData> GetAllSwitchStateResultDatas()
@@ -201,9 +202,10 @@ namespace QuestSystem
             return UpdateData(stateResultData);
         }
         
-        public IEnumerable<SwitchComponentData> GetSwitchComponentDatas(string switchId, int state)
+        public IEnumerable<SwitchComponentData> GetSwitchComponentDatas(string switchId)
         {
-            return GetDatas<SwitchComponentData>().Where((switchData) => switchData.SwitchId == switchId && switchData.State == state);
+            return GetDatas<SwitchComponentData>().Where((switchData) => switchData.SwitchId == switchId)
+                .OrderBy((switchData) => switchData.State);
         }
         
         public IEnumerable<SwitchComponentData> GetAllSwitchComponentDatas()

@@ -9,6 +9,8 @@ namespace QuestSystem
         protected bool IsUpdate { get; set; } = false;
         private Rect _windowRect = new Rect(0, 0, 400, 300);
         protected Rect WindowRect => _windowRect;
+        
+        
         protected void ConfirmWindow(int unusedWindowID)
         {
             
