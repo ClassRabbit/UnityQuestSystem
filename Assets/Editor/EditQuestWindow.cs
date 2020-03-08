@@ -165,6 +165,9 @@ namespace QuestSystem
                         }
                     }
                 }
+                
+                GUILayout.Space(position.width * 0.2f);
+                GUILayout.EndHorizontal();
             }
             EditorGUI.EndDisabledGroup();
 
@@ -173,8 +176,6 @@ namespace QuestSystem
                 DrawConfirmWindow(string.Empty);
             }
             
-            GUILayout.Space(position.width * 0.2f);
-            GUILayout.EndHorizontal();
             GUILayout.Space(KSpace);
         }
         

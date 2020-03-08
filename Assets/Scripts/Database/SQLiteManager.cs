@@ -140,7 +140,7 @@ namespace QuestSystem
         
         public IEnumerable<QuestData> GetAllQuestDatas()
         {
-            return GetDatas<QuestData>();
+            return GetDatas<QuestData>().OrderBy((questData) => questData.QuestId);
         }
 
 
@@ -159,6 +159,11 @@ namespace QuestSystem
             return UpdateData(descriptionData);
         }
         
+        public SwitchDescriptionData DeleteSwitchDescriptionData(SwitchDescriptionData descriptionData)
+        {
+            return DeleteData(descriptionData);
+        }
+        
         public SwitchDescriptionData GetSwitchDescriptionData(string switchId)
         {
             return GetDatas<SwitchDescriptionData>().Where((descriptionData) => descriptionData.SwitchId == switchId).FirstOrDefault();
@@ -166,7 +171,7 @@ namespace QuestSystem
         
         public IEnumerable<SwitchDescriptionData> GetAllSwitchDescriptionDatas()
         {
-            return GetDatas<SwitchDescriptionData>();
+            return GetDatas<SwitchDescriptionData>().OrderBy((descriptionData) => descriptionData.SwitchId);
         }
 
 
@@ -195,6 +200,11 @@ namespace QuestSystem
             return UpdateData(stateResultData);
         }
         
+        public SwitchStateResultData DeleteSwitchStateResultData(SwitchStateResultData stateResultData)
+        {
+            return DeleteData(stateResultData);
+        }
+        
         public IEnumerable<SwitchStateResultData> GetSwitchStateResultData(string switchId)
         {
             return GetDatas<SwitchStateResultData>().Where((stateResultData) => stateResultData.SwitchId == switchId)
@@ -218,6 +228,11 @@ namespace QuestSystem
         public SwitchComponentData UpdateSwitchComponentData(SwitchComponentData stateResultData)
         {
             return UpdateData(stateResultData);
+        }
+        
+        public SwitchComponentData DeleteSwitchComponentData(SwitchComponentData stateResultData)
+        {
+            return DeleteData(stateResultData);
         }
         
         public IEnumerable<SwitchComponentData> GetSwitchComponentDatas(string switchId)

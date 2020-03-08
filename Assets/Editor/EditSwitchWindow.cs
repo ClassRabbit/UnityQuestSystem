@@ -11,6 +11,10 @@ namespace QuestSystem
         enum EConfirmState
         {
             None,
+            Fail,
+            CreateSuccess,
+            UpdateSuccess,
+            DeleteSuccess,
         }
         private int KSpace = 10;
         
@@ -23,11 +27,35 @@ namespace QuestSystem
 
         private int _stateIndex = 0;
 
+        private string _confirmText = string.Empty;
+
         protected override void EnableProcess()
         {
             if (_stateList.Count == 0)
             {
                 AddState();
+            }
+        }
+        
+        protected override void ConfirmWindowProcess()
+        {
+            GUILayout.Label(_confirmText);
+            if (GUILayout.Button("Confirm"))
+            {
+                switch (_confirmState)
+                {
+                    case EConfirmState.CreateSuccess:
+                        _descriptionData = new SwitchDescriptionData();
+                        _stateList = new List<List<SwitchComponentData>>();
+                        _stateResultDataList = new List<SwitchStateResultData>();
+                        AddState();
+                        break;
+                    case EConfirmState.DeleteSuccess:
+                        IsClose = true;
+                        return;
+                }
+                _confirmState = EConfirmState.None;
+                
             }
         }
         
@@ -75,6 +103,12 @@ namespace QuestSystem
 
         protected override void GUIProcess()
         {
+            if (IsClose)
+            {
+                this.Close();
+                return;
+            }
+            
             //로고
             GUILayout.Space(KSpace);
             
@@ -190,41 +224,68 @@ namespace QuestSystem
                 }
                 
                 GUILayout.EndVertical();
+                
+                
+                
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(position.width * 0.2f);
                 //버튼 기능
                 if (IsUpdate)
                 {
-                
+                    
                     if (GUILayout.Button("Update"))
                     {
-                        Debug.Log("업데이트 성공");
+                        if (CheckProcess())
+                        {
+                            DeleteProcess();
+                            SaveProcess();
+                            _confirmState = EConfirmState.UpdateSuccess;
+                        }
+                        else
+                        {
+                            _confirmState = EConfirmState.Fail;
+                        }
                     }
                     if (GUILayout.Button("Delete"))
                     {
                         //SwitchData 구성요소인지 체크
+                        DeleteProcess();
+                        _confirmText = "삭제되었습니다.";
+                        _confirmState = EConfirmState.DeleteSuccess;
                     }
+                    
                 }
                 else
                 {
                     if (GUILayout.Button("생성"))
                     {
-                        string message = string.Empty;
-                        if (SaveProcess(out message))
+                        if (CheckProcess())
                         {
-                            Debug.Log("성공 : " + message);
+                            SaveProcess();
+                            _confirmState = EConfirmState.CreateSuccess;
                         }
                         else
                         {
-                            Debug.LogError("실패 : " + message);
+                            _confirmState = EConfirmState.Fail;
                         }
                     }
                 }
+                GUILayout.Space(position.width * 0.2f);
+                GUILayout.EndHorizontal();
             }
             EditorGUI.EndDisabledGroup();
+            
+            if (_confirmState != EConfirmState.None)
+            {
+                DrawConfirmWindow(string.Empty);
+            }
+            
+            GUILayout.Space(KSpace);
         }
 
 
         //현제 스테이트에서 하나 추가한다.
-        public void AddState()
+        private void AddState()
         {
             var state = new List<SwitchComponentData>();
             var stateComponent = new SwitchComponentData();
@@ -235,19 +296,21 @@ namespace QuestSystem
             var stateResultData = new SwitchStateResultData();
             _stateResultDataList.Add(stateResultData);
         }
+        
+        
 
-        public bool SaveProcess(out string message)
+        private bool CheckProcess()
         {
             var switchId = _descriptionData.SwitchId;
             if (string.IsNullOrEmpty(switchId))
             {
-                message = "SwitchId가 비었다.";
+                _confirmText = "SwitchId가 입력되지 않았습니다.";
                 return false;
             }
 
-            if (null != SQLiteManager.Instance.GetSwitchDescriptionData(switchId))
+            if (!IsUpdate && null != SQLiteManager.Instance.GetSwitchDescriptionData(switchId))
             {
-                message = "중복된 SwitchId가 있습니다.";
+                _confirmText = "SwitchId가 중복되었습니다.";
                 return false;
             }
 
@@ -259,13 +322,13 @@ namespace QuestSystem
                     var stateComponent = state[componentIdx];
                     if (string.IsNullOrEmpty(stateComponent.QuestId))
                     {
-                        message = $"QuestId가 비어있습니다 : 상태 {stateIdx} - {componentIdx}번 ";
+                        _confirmText = $"QuestId가 입력되지 않았습니다 : 상태 {stateIdx} - {componentIdx}번 ";
                         return false;
                     }
                     
                     if (null == SQLiteManager.Instance.GetQuestData(stateComponent.QuestId))
                     {
-                        message = $"등록되지 않은 QuestId입니다. : 상태 {stateIdx} - {componentIdx}번 - {stateComponent.QuestId}";
+                        _confirmText = $"생성되지 않은 QuestId 입니다. : 상태 {stateIdx} - {componentIdx}번 - {stateComponent.QuestId}";
                         return false;
                     }
 
@@ -274,6 +337,14 @@ namespace QuestSystem
                     stateComponent.Order = componentIdx;
                 }
             }
+
+            return true;
+            
+        }
+
+        private void SaveProcess()
+        {
+            var switchId = _descriptionData.SwitchId;
             
             SQLiteManager.Instance.CreateSwitchDescriptionData(_descriptionData);
             
@@ -290,13 +361,33 @@ namespace QuestSystem
                 var stateResult = _stateResultDataList[stateIdx];
                 stateResult.SwitchId = switchId;
                 stateResult.State = stateIdx;
+                
                 SQLiteManager.Instance.CreateSwitchStateResultData(stateResult);
             }
-
-            message = "완료되었습니다.";
-            return true;
+            
+            
+            _confirmText = IsUpdate ? "수정되었습니다." : "생성되었습니다.";
         }
 
+
+        private void DeleteProcess()
+        {
+            SQLiteManager.Instance.DeleteSwitchDescriptionData(_descriptionData);
+            
+            foreach (var state in _stateList)
+            {
+                foreach (var stateComponent in state)
+                {
+                    SQLiteManager.Instance.DeleteSwitchComponentData(stateComponent);
+                }
+            }
+
+            for (int stateIdx = 0; stateIdx < _stateResultDataList.Count; ++stateIdx)
+            {
+                var stateResult = _stateResultDataList[stateIdx];
+                SQLiteManager.Instance.DeleteSwitchStateResultData(stateResult);
+            }
+        }
 
     }
 }
