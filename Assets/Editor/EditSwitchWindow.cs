@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
@@ -39,6 +40,37 @@ namespace QuestSystem
             // Get existing open window or if none, make a new one:
             EditSwitchWindow window = (EditSwitchWindow)EditorWindow.GetWindow(typeof(EditSwitchWindow));
             window.Show();
+        }
+        
+        internal void UpdateSwitchData(SwitchDescriptionData descriptionData, List<SwitchComponentData> componentDataList, List<SwitchStateResultData> stateResultDataList)
+        {
+            if (null == descriptionData || null == componentDataList || null == stateResultDataList)
+            {
+                return;
+            }
+            
+            IsUpdate = true;
+            _descriptionData = descriptionData;
+
+            int stateIdx = componentDataList[0].State;
+            
+            _stateList = new List<List<SwitchComponentData>>();
+            _stateList.Add(new List<SwitchComponentData>());
+            for (int i = 0; i < componentDataList.Count; ++i)
+            {
+                if (stateIdx == componentDataList[i].State)
+                {
+                    _stateList[stateIdx].Add(componentDataList[i]);
+                }
+                else
+                {
+                    ++stateIdx;
+                    _stateList.Add(new List<SwitchComponentData>());
+                    _stateList[stateIdx].Add(componentDataList[i]);
+                }
+            }
+            
+            _stateResultDataList = stateResultDataList;
         }
 
         protected override void GUIProcess()

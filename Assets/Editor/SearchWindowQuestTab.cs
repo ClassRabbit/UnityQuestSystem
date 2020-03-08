@@ -108,8 +108,6 @@ namespace QuestSystem
                 EditorStyles.label.wordWrap = true;
                 GUILayout.Label(questData.Description, EditorStyles.label);
                 EditorStyles.label.wordWrap = beforeWordWrap;
-                
-                
             }
         }
 

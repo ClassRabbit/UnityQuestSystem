@@ -77,7 +77,7 @@ namespace QuestSystem
 
         internal void UpdateQuestData(QuestData questData)
         {
-            if (questData == null)
+            if (null == questData)
             {
                 return;
             }

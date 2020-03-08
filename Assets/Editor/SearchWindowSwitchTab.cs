@@ -171,17 +171,35 @@ namespace QuestSystem
         {
             if (SelectedDataIndex.HasValue)
             {
-//                var questData = TargetQuestDataList[SelectedDataIndex.Value];
-//                GUILayout.Space(3);
-//                GUILayout.Label(questData.QuestId);
-//                GUILayout.Space(3);
-//                GUILayout.Label(questData.Description);
-//                if (GUILayout.Button("Edit"))
-//                {
-//                    EditQuestWindow window = (EditQuestWindow)EditorWindow.GetWindow(typeof(EditQuestWindow));
-//                    window.Show();
-//                    window.UpdateQuestData(questData);
-//                }
+                var descriptionData = TargetDataList[SelectedDataIndex.Value];
+                GUILayout.Space(3);
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Space(8);
+                int beforeFontSize = EditorStyles.label.fontSize;
+                EditorStyles.label.fontSize = 20;
+                GUILayout.Label(descriptionData.SwitchId, EditorStyles.label);
+                EditorStyles.label.fontSize = beforeFontSize;
+                GUILayout.EndVertical();
+                
+                if (GUILayout.Button(TexturUpdateIcon, GUILayout.Width(40)))
+                {
+                    EditSwitchWindow window = (EditSwitchWindow)EditorWindow.GetWindow(typeof(EditSwitchWindow));
+                    window.Show();
+                    
+                    int pageSwitchIdx = SelectedDataIndex.Value - (KSwitchPerPage * CurrentPageIndex);
+                    var componentList = _currentPageComponentDataList[pageSwitchIdx];
+                    var resultList = _currentPageStateResultDataList[pageSwitchIdx];
+                    window.UpdateSwitchData(descriptionData, componentList, resultList);
+                    
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(3);
+
+                bool beforeWordWrap = EditorStyles.label.wordWrap;
+                EditorStyles.label.wordWrap = true;
+                GUILayout.Label(descriptionData.Description, EditorStyles.label);
+                EditorStyles.label.wordWrap = beforeWordWrap;
             }
         }
 
