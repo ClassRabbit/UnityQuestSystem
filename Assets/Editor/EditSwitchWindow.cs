@@ -45,18 +45,21 @@ namespace QuestSystem
                 switch (_confirmState)
                 {
                     case EConfirmState.CreateSuccess:
-                        _descriptionData = new SwitchDescriptionData();
-                        _stateList = new List<List<SwitchComponentData>>();
-                        _stateResultDataList = new List<SwitchStateResultData>();
-                        AddState();
-                        break;
                     case EConfirmState.DeleteSuccess:
-                        IsClose = true;
-                        return;
+                        ResetEditor();
+                        break;
                 }
                 _confirmState = EConfirmState.None;
                 
             }
+        }
+
+        void ResetEditor()
+        {
+            _descriptionData = new SwitchDescriptionData();
+            _stateList = new List<List<SwitchComponentData>>();
+            _stateResultDataList = new List<SwitchStateResultData>();
+            AddState();
         }
         
         
@@ -70,6 +73,10 @@ namespace QuestSystem
             window.Show();
         }
         
+        
+        //
+        // Update를 위해 전달된 Data로 변경
+        //
         internal void UpdateSwitchData(SwitchDescriptionData descriptionData, List<SwitchComponentData> componentDataList, List<SwitchStateResultData> stateResultDataList)
         {
             if (null == descriptionData || null == componentDataList || null == stateResultDataList)
@@ -78,10 +85,10 @@ namespace QuestSystem
             }
             
             IsUpdate = true;
+            
             _descriptionData = descriptionData;
 
             int stateIdx = componentDataList[0].State;
-            
             _stateList = new List<List<SwitchComponentData>>();
             _stateList.Add(new List<SwitchComponentData>());
             for (int i = 0; i < componentDataList.Count; ++i)
@@ -98,17 +105,15 @@ namespace QuestSystem
                 }
             }
             
-            _stateResultDataList = stateResultDataList;
+            _stateResultDataList = new List<SwitchStateResultData>();
+            foreach (var stateResultData in stateResultDataList)
+            {
+                stateResultDataList.Add(stateResultData);
+            }
         }
 
         protected override void GUIProcess()
         {
-            if (IsClose)
-            {
-                this.Close();
-                return;
-            }
-            
             //로고
             GUILayout.Space(KSpace);
             

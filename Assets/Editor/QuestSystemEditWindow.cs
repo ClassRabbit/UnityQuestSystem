@@ -6,7 +6,6 @@ namespace QuestSystem
     
     public abstract class QuestSystemEditWindow : QuestSystemWindow
     {
-        protected bool IsClose { get; set; } = false;
         protected bool IsUpdate { get; set; } = false;
         private Rect _windowRect = new Rect(0, 0, 400, 300);
         protected Rect WindowRect => _windowRect;

@@ -54,12 +54,10 @@ namespace QuestSystem
                 switch (_confirmState)
                 {
                     case EConfirmState.CreateSuccess:
+                    case EConfirmState.DeleteSuccess:
                         _questData.QuestId = string.Empty;
                         _questData.Description = string.Empty;
                         break;
-                    case EConfirmState.DeleteSuccess:
-                        IsClose = true;
-                        return;
                 }
                 _confirmState = EConfirmState.None;
                 
@@ -88,12 +86,6 @@ namespace QuestSystem
 
         protected override void GUIProcess()
         {
-            if (IsClose)
-            {
-                this.Close();
-                return;
-            }
-            
             GUILayout.Space(KSpace);
             
             GUILayout.Label("Create QuestData", "DefaultCenteredLargeText");
