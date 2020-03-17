@@ -114,6 +114,12 @@ namespace QuestSystem
 
         protected override void GUIProcess()
         {
+            if (IsClose)
+            {
+                this.Close();
+                return;
+            }
+            
             //로고
             GUILayout.Space(KSpace);
             
