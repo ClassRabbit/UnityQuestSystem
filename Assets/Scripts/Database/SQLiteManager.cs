@@ -14,33 +14,16 @@ namespace QuestSystem
 {
     public class SQLiteManager
     {
+        static SQLiteManager()
+        {
+        }
         private SQLiteManager()
         {
         }
 
-        private static volatile SQLiteManager _instance = null;
-        private static object syncRoot = new Object();
-
         private SQLiteConnection _connection;
-        
-        public static SQLiteManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = new SQLiteManager();
-                        }
-                    }
-                }
 
-                return _instance;
-            }
-        }
+        public static SQLiteManager Instance { get; } = new SQLiteManager();
 
         public bool IsConnected
         {
