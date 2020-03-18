@@ -7,38 +7,36 @@ namespace QuestSystem
     
     public abstract class QuestSystemWindow : EditorWindow
     {
+
+        #region Variable
+
+        /// <summary>
+        ///   <para>현재 창을 구성하는 Database 이름</para>
+        /// </summary>
         protected string DatabaseName { get; private set; }
 
+
+        #endregion
+        
+        
+        #region UnityEventFunction
+        
         protected void OnEnable()
         {
             EnableProcess();
         }
-
-        protected virtual void EnableProcess()
-        {
-        }
-
-        protected virtual void RefreshProcess()
-        {
-        }
-
-
+        
         private void OnGUI()
         {
             if (!SQLiteManager.Instance.IsConnected)
             {
-                Debug.LogError("DB is Not Connect");
+                Debug.LogError("SQLiteManager DB is Not Connect");
                 return;
             }
 
             GUIProcess();
         }
         
-        
-        protected virtual void GUIProcess()
-        {
-        }
-
         private void OnFocus()
         {
             string beforeDatabaseName = DatabaseName;
@@ -77,10 +75,44 @@ namespace QuestSystem
             FocusProcess();
         }
         
+        #endregion  
+        
+        
+        #region Virtualfunction
+        
+        /// <summary>
+        ///   <para>OnEnable 되었을 시 행동</para>
+        /// </summary>
+        protected virtual void EnableProcess()
+        {
+        }
+
+        /// <summary>
+        ///   <para>Database 변경되었을 시 행동</para>
+        /// </summary>
+        protected virtual void RefreshProcess()
+        {
+        }
+
+        
+        /// <summary>
+        ///   <para>OnGUI 되었을 시 행동</para>
+        /// </summary>
+        protected virtual void GUIProcess()
+        {
+        }
+
+        /// <summary>
+        ///   <para>OnFocus 되었을 시 행동</para>
+        /// </summary>
         protected virtual void FocusProcess()
         {
         }
+        
+        #endregion
     }
+    
+        
 }
 
 

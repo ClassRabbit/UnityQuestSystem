@@ -3,22 +3,40 @@ using UnityEditor;
 
 namespace QuestSystem
 {
-    
+    /// <summary>
+    ///   <para>QuestId, SwitchId 생성 창의 추상 클래스</para>
+    /// </summary>
     public abstract class QuestSystemEditWindow : QuestSystemWindow
     {
-        protected bool IsUpdate { get; set; } = false;
+        #region Const
+
+        protected string KConfirmText = "확인";
+        protected string KDescriptionText = "설명";
+        protected string KCreateText = "생성";
+        protected string KUpdateText = "수정";
+        protected string KDeleteText = "삭제";
+        
+        protected string KCreateSuccessText = "생성되었습니다.";
+        protected string KUpdateSuccessText = "수정되었습니다.";
+        protected string KDeleteSuccessText = "삭제되었습니다.";
+
+        #endregion
+        
+        #region Variable
+
+        // 확인창 크기
         private Rect _windowRect = new Rect(0, 0, 400, 300);
         protected Rect WindowRect => _windowRect;
+        
+        #endregion
+
+
+        #region ConfirmWindow
 
         protected void ConfirmWindow(int unusedWindowID)
         {
             ConfirmWindowProcess();
         }
-
-        protected virtual void ConfirmWindowProcess()
-        {
-        }
-        
 
         protected void DrawConfirmWindow(string windowName)
         {
@@ -30,6 +48,24 @@ namespace QuestSystem
             _windowRect = GUILayout.Window(1, _windowRect, ConfirmWindow, windowName);
             EndWindows();
         }
+
+        #endregion
+        
+        
+        #region VirtualFunction
+
+        /// <summary>
+        ///   <para>확인창 구성하는 행동</para>
+        /// </summary>
+        protected abstract void ConfirmWindowProcess();
+
+        /// <summary>
+        ///   <para>창을 초기화하는 행동</para>
+        /// </summary>
+        protected abstract void ResetEditor();
+        
+        #endregion
+        
     
     
     }
