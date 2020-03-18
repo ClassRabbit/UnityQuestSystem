@@ -26,16 +26,6 @@ namespace QuestSystem
         
         protected override void EnableProcess()
         {
-            switch(_selectedMode)
-            {
-                case EMode.Quest:
-                    _questTab.EnableProcess();
-                    break;
-                case EMode.Switch:
-                default:
-                    _switchTab.EnableProcess();
-                    break;
-            }
         } 
     
     
