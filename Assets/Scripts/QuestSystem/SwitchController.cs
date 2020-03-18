@@ -9,8 +9,7 @@ namespace QuestSystem
     {
 
         [SerializeField] 
-        public string _switchId;
-
+        private string _switchId;
         public string SwitchId => _switchId;
 
         public abstract void OnSwitch(bool isOn);

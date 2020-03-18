@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace QuestSystem
@@ -61,12 +60,10 @@ namespace QuestSystem
 
         protected override void FocusProcess()
         {
-            var enumerableQuestData = SQLiteManager.Instance.GetAllQuestDatas();
-            var questDataList = enumerableQuestData.ToList();
+            var questDataList = SQLiteManager.Instance.GetAllQuestDataList();
             _questTab.FocusProcess(questDataList);
             
-            var enumerableSwitchDescriptionData = SQLiteManager.Instance.GetAllSwitchDescriptionDatas();
-            var switchDescriptionDataList = enumerableSwitchDescriptionData.ToList();
+            var switchDescriptionDataList = SQLiteManager.Instance.GetAllSwitchDescriptionDataList();
             _switchTab.FocusProcess(switchDescriptionDataList);
         }
     

@@ -156,7 +156,7 @@ namespace QuestSystem
                     if (GUILayout.Button(KDeleteText))
                     {
                         //SwitchData 구성요소인지 체크
-                        if (SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(_questData.QuestId).Count() != 0)
+                        if (SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(_questData.QuestId).Count() != 0)
                         {
                             _confirmState = EConfirmState.DeleteFailUseSwitch;
                         }

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using QuestSystem;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
@@ -15,5 +17,70 @@ public class QuestManager : MonoBehaviour
     
     // forcedupdate 강제로 현재 업데이트
     
+    List<string> _clearedQuestIdList = new List<string>();
+    Dictionary<string, Action<bool>> _switchActionDic = new Dictionary<string, Action<bool>>();
+    HashSet<string> _clearedQuestSet = new HashSet<string>();
+
+    private QuestManager()
+    {
+        
+    }
     
+    //정적 생성자를 이용한 싱클톤 생성
+    public static QuestManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
+
+    private void Update()
+    {
+        if (_clearedQuestIdList.Count != 0)
+        {
+            foreach (var questId in _clearedQuestIdList)
+            {
+                if (!_clearedQuestSet.Contains(questId))
+                {
+                    _clearedQuestSet.Add(questId);
+                }
+            }
+            
+            _clearedQuestIdList.Clear();
+//            UpdateSwitch();
+        }
+    }
+
+    void SetSwitchActionDic()
+    {
+        _switchActionDic.Clear();
+
+        var switchControllers = FindObjectsOfType<SwitchController>();
+        foreach (var switchController in switchControllers)
+        {
+            if (!_switchActionDic.ContainsKey(switchController.SwitchId))
+            {
+                _switchActionDic.Add(switchController.SwitchId, switchController.OnSwitch);
+            }
+            else
+            {
+                _switchActionDic[switchController.SwitchId] += switchController.OnSwitch;
+            }
+        }
+        
+    }
+    
+
+    void UpdateAllSwitch()
+    {
+        
+    }
 }

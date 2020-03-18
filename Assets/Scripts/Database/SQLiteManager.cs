@@ -4,19 +4,13 @@ using System.Collections;
 using System.IO;
 #endif
 using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
 using SQLite4Unity3d;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace QuestSystem
 {
     public class SQLiteManager
     {
-        static SQLiteManager()
-        {
-        }
         private SQLiteManager()
         {
         }
@@ -115,15 +109,20 @@ namespace QuestSystem
             return DeleteData(questData);
         }
 
-
+        
+        private const string KQueryGetQuestData = @"SELECT * FROM QuestData 
+                WHERE QuestId = '{0}'";
         public QuestData GetQuestData(string questId)
         {
-            return GetDatas<QuestData>().Where((questData) => questData.QuestId == questId).FirstOrDefault();
+            var questDataList = _connection.Query<QuestData>(string.Format(KQueryGetQuestData, questId));
+            return questDataList.Count == 1 ? questDataList[0] : null;
         }
         
-        public IEnumerable<QuestData> GetAllQuestDatas()
+        private const string KQueryGetAllQuestDataList = @"SELECT * FROM QuestData 
+                ORDER BY QuestId";
+        public List<QuestData> GetAllQuestDataList()
         {
-            return GetDatas<QuestData>().OrderBy((questData) => questData.QuestId);
+            return _connection.Query<QuestData>(KQueryGetAllQuestDataList);
         }
 
 
@@ -147,26 +146,30 @@ namespace QuestSystem
             return DeleteData(descriptionData);
         }
         
+        private const string KQueryGetSwitchDescriptionData = @"SELECT * FROM SwitchDescriptionData 
+                WHERE SwitchId = '{0}'";
         public SwitchDescriptionData GetSwitchDescriptionData(string switchId)
         {
-            return GetDatas<SwitchDescriptionData>().Where((descriptionData) => descriptionData.SwitchId == switchId).FirstOrDefault();
+            var descriptionDataList = _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSwitchDescriptionData, switchId));
+            return descriptionDataList.Count == 1 ? descriptionDataList[0] : null;
         }
         
-        public IEnumerable<SwitchDescriptionData> GetAllSwitchDescriptionDatas()
+        private const string KQueryGetAllSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
+                ORDER BY SwitchId";
+        public List<SwitchDescriptionData> GetAllSwitchDescriptionDataList()
         {
-            return GetDatas<SwitchDescriptionData>().OrderBy((descriptionData) => descriptionData.SwitchId);
+            return _connection.Query<SwitchDescriptionData>(KQueryGetAllSwitchDescriptionDataList);
         }
 
 
-        private const string KQueryGetSearchSwitchDescriptionDatas = @"SELECT * FROM SwitchDescriptionData 
+        private const string KQueryGetSearchSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
                 WHERE SwitchId IN 
                     (SELECT DISTINCT SwitchId FROM SwitchComponentData 
                         WHERE QuestId LIKE '%{0}%' 
                         OR SwitchId LIKE '%{0}%')";
-
-        public IEnumerable<SwitchDescriptionData> GetSearchSwitchDescriptionDatas(string searchText)
+        public List<SwitchDescriptionData> GetSearchSwitchDescriptionDataList(string searchText)
         {
-            return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSearchSwitchDescriptionDatas, searchText));
+            return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSearchSwitchDescriptionDataList, searchText));
         }
         
         
@@ -188,15 +191,18 @@ namespace QuestSystem
             return DeleteData(stateResultData);
         }
         
-        public IEnumerable<SwitchStateResultData> GetSwitchStateResultData(string switchId)
+        private const string KQueryGetSwitchStateResultData = @"SELECT * FROM SwitchStateResultData
+            WHERE SwitchId = '{0}'
+            ORDER BY State";
+        public List<SwitchStateResultData> GetSwitchStateResultDataList(string switchId)
         {
-            return GetDatas<SwitchStateResultData>().Where((stateResultData) => stateResultData.SwitchId == switchId)
-                .OrderBy((switchData) => switchData.State);
+            return _connection.Query<SwitchStateResultData>(string.Format(KQueryGetSwitchStateResultData, switchId));
         }
         
-        public IEnumerable<SwitchStateResultData> GetAllSwitchStateResultDatas()
+        private const string KQueryGetAllSwitchStateResultDataList = @"SELECT * FROM SwitchStateResultData";
+        public List<SwitchStateResultData> GetAllSwitchStateResultDataList()
         {
-            return GetDatas<SwitchStateResultData>();
+            return _connection.Query<SwitchStateResultData>(KQueryGetAllSwitchStateResultDataList);
         }
         
         
@@ -218,15 +224,18 @@ namespace QuestSystem
             return DeleteData(stateResultData);
         }
         
-        public IEnumerable<SwitchComponentData> GetSwitchComponentDatas(string switchId)
+        private const string KQueryGetSwitchComponentDataList = @"SELECT * FROM SwitchComponentData 
+                WHERE SwitchId = '{0}'
+                ORDER BY State";
+        public List<SwitchComponentData> GetSwitchComponentDataList(string switchId)
         {
-            return GetDatas<SwitchComponentData>().Where((switchData) => switchData.SwitchId == switchId)
-                .OrderBy((switchData) => switchData.State);
+            return _connection.Query<SwitchComponentData>(string.Format(KQueryGetSwitchComponentDataList, switchId));
         }
         
-        public IEnumerable<SwitchComponentData> GetAllSwitchComponentDatas()
+        private const string KQueryGetAllSwitchComponentDataList = @"SELECT * FROM SwitchComponentData";
+        public List<SwitchComponentData> GetAllSwitchComponentDataList()
         {
-            return GetDatas<SwitchComponentData>();
+            return _connection.Query<SwitchComponentData>(KQueryGetAllSwitchComponentDataList);
         }
         
 #endregion

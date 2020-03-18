@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace QuestSystem
@@ -50,11 +49,11 @@ namespace QuestSystem
                 {
                     var descriptionData = targetDataList[i];
                     
-                    var enumerableComponentData = SQLiteManager.Instance.GetSwitchComponentDatas(descriptionData.SwitchId);
-                    _currentPageComponentDataList.Add(enumerableComponentData.ToList());
+                    var componentDataList = SQLiteManager.Instance.GetSwitchComponentDataList(descriptionData.SwitchId);
+                    _currentPageComponentDataList.Add(componentDataList);
 
-                    var enumerableStateResultData = SQLiteManager.Instance.GetSwitchStateResultData(descriptionData.SwitchId);
-                    _currentPageStateResultDataList.Add(enumerableStateResultData.ToList());
+                    var stateResultDataList = SQLiteManager.Instance.GetSwitchStateResultDataList(descriptionData.SwitchId);
+                    _currentPageStateResultDataList.Add(stateResultDataList);
                 }
             }
         }
@@ -82,7 +81,7 @@ namespace QuestSystem
         {
             if (IsSearch)
             {
-                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(SearchText).ToList();
+                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(SearchText);
             }
             SetTablePageData();
         }
