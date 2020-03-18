@@ -11,34 +11,32 @@ namespace QuestSystem
 
     internal class SearchWindowSwitchTab : SearchWindowTab<SwitchDescriptionData>
     {
+        #region Const
+
         private const int KSwitchPerPage = 10;
-        
+        private const string KSwitchIdText = "SwitchId";
+        private const string KStateText = "상태";
+        private const string KFormulaText = "계산식";
+        private const string KStateResultText = "결과";
+
+        #endregion
+
+
+
+        #region Variable
+
         private List<List<SwitchComponentData>> _currentPageComponentDataList;
         private List<List<SwitchStateResultData>> _currentPageStateResultDataList;
         
         protected override int MaxPageIndex => (TargetDataList.Count - 1) / KSwitchPerPage;
 
-
-        internal void EnableProcess()
-        {
-        }
+        #endregion
         
-        protected override bool CompareData(SwitchDescriptionData ta, SwitchDescriptionData tb)
-        {
-            return ta.SwitchId == tb.SwitchId;
-        }
-
-        protected override void ActionSearch()
-        {
-            if (IsSearch)
-            {
-                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(SearchText).ToList();
-            }
-            SetPageData();
-        }
-
-
-        void SetPageData()
+        
+        /// <summary>
+        ///   <para></para>
+        /// </summary>
+        void SetTablePageData()
         {
             var targetDataList = TargetDataList;
             _currentPageComponentDataList = new List<List<SwitchComponentData>>();
@@ -60,22 +58,38 @@ namespace QuestSystem
                 }
             }
         }
-
         
-//        StringBuilder stringBuilder =
-//            new StringBuilder(_currentPageComponentDataList[stateIdx][0].QuestId);
-//        stringBuilder.Append(' ');
-//        for (int componentIdx = 1;
-//        componentIdx < _currentPageComponentDataList[stateIdx].Count;
-//        ++componentIdx)
-//        {
-//            var componentData = _currentPageComponentDataList[stateIdx][componentIdx];
-//            stringBuilder.Append(componentData.Operator);
-//            stringBuilder.Append(' ');
-//            stringBuilder.Append(componentData.QuestId);
-//            stringBuilder.Append(' ');
-//        }
+        /// <summary>
+        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        /// </summary>
+        protected override bool IsSameData(SwitchDescriptionData ta, SwitchDescriptionData tb)
+        {
+            return ta.SwitchId == tb.SwitchId;
+        }
+        
+        /// <summary>
+        ///   <para>현재 페이지 새롭게 그리기</para>
+        /// </summary>
+        protected override void RefreshPageListProcess()
+        {
+            SetTablePageData();
+        }
 
+        /// <summary>
+        ///   <para>조회 실행</para>
+        /// </summary>
+        protected override void ActionSearch()
+        {
+            if (IsSearch)
+            {
+                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDatas(SearchText).ToList();
+            }
+            SetTablePageData();
+        }
+
+        /// <summary>
+        ///   <para>테이블 그리기</para>
+        /// </summary>
         protected override void DrawTableProcess()
         {
             var targetDataList = TargetDataList;
@@ -161,12 +175,9 @@ namespace QuestSystem
             }
         }
         
-        protected override void RefreshPageListProcess()
-        {
-            SetPageData();
-        }
-
-
+        /// <summary>
+        ///   <para>세부 정보 그리기</para>
+        /// </summary>
         protected override void DrawDetailProcess()
         {
             if (SelectedDataIndex.HasValue)
@@ -203,14 +214,16 @@ namespace QuestSystem
             }
         }
 
-
+        /// <summary>
+        ///   <para>테이블 컬럼 resize될시 실행</para>
+        /// </summary>
         protected override void ResizeColumn()
         {
             Columns = new MultiColumnHeaderState.Column[]
             {
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("SwitchId"),
+                    headerContent = new GUIContent(KSwitchIdText),
                     width = TabPosition.width * 0.2f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
@@ -219,7 +232,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("상태"),
+                    headerContent = new GUIContent(KStateText),
                     width = TabPosition.width * 0.15f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
@@ -228,7 +241,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("계산식"),
+                    headerContent = new GUIContent(KFormulaText),
                     width = TabPosition.width * 0.5f,
                     minWidth = TabPosition.width * 0.3f,
                     maxWidth = TabPosition.width * 0.7f,
@@ -237,7 +250,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("결과"),
+                    headerContent = new GUIContent(KStateResultText),
                     width = TabPosition.width * 0.15f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,

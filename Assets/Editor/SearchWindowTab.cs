@@ -10,13 +10,22 @@ namespace QuestSystem
     internal abstract class SearchWindowTab<T> where T : class
     {
 
-        
+        #region Const
+
         private const int KSkipPageIndex = -1;
         private const float KDetailAreaRatio = 0.25f;
         private const int KPageAreaHeight = 100;
         private const int KTopAreaHeight = 60;
         private const int KTabPadding = 10;
+        
+        
+        protected const string KDescriptionText = "세부 정보";
 
+        #endregion
+
+
+        #region Variable
+        
         protected List<T> DataList { get; set; }
         protected List<T> SearchResultDataList { get; set; }
         protected List<T> TargetDataList => IsSearch ? SearchResultDataList : DataList;
@@ -60,13 +69,12 @@ namespace QuestSystem
         protected int CurrentPageIndex { get; set; }
         protected virtual int MaxPageIndex => 0;
         
+        #endregion
         
-        //조회
-        protected virtual void ActionSearch()
-        {
-        }
-
-
+        
+        /// <summary>
+        ///   <para>Focus시 데이터 업데이트</para>
+        /// </summary>
         internal void FocusProcess(List<T> dataList)
         {
             T selectedData = null;
@@ -86,7 +94,7 @@ namespace QuestSystem
                 var targetDataList = TargetDataList;
                 for (int i = 0; i < targetDataList.Count; ++i)
                 {
-                    if (CompareData(selectedData, targetDataList[i]))
+                    if (IsSameData(selectedData, targetDataList[i]))
                     {
                         isFound = true;
                         SelectedDataIndex = i;
@@ -102,13 +110,30 @@ namespace QuestSystem
             
             RefreshPageList();
         }
-
-        protected virtual bool CompareData(T ta, T tb)
+        
+        internal void GUIProcess(Rect tabPosition)
         {
-            return true;
+            if (TabPosition != tabPosition || null == Columns)
+            {
+                TabPosition = tabPosition;
+                ResizeColumn();
+            }
+
+            float detailHeight = TabPosition.height * KDetailAreaRatio;
+            //상단 여백
+            GUILayout.Space(KTabPadding);
+            //검색창, 생성버튼
+            DrawSearchBar();
+            //테이블 그리기
+            DrawTable(detailHeight);
+            //디테일 그리기
+            DrawDetail(detailHeight);
+
         }
 
-
+        /// <summary>
+        ///   <para>현재 페이지의 데이터 재확인</para>
+        /// </summary>
         protected void RefreshPageList()
         {
             if (MaxPageIndex <= CurrentPageIndex)
@@ -148,32 +173,10 @@ namespace QuestSystem
 
             RefreshPageListProcess();
         }
-
-        protected virtual void RefreshPageListProcess()
-        {
-            
-        }
-
-        internal void GUIProcess(Rect tabPosition)
-        {
-            if (TabPosition != tabPosition || null == Columns)
-            {
-                TabPosition = tabPosition;
-                ResizeColumn();
-            }
-
-            float detailHeight = TabPosition.height * KDetailAreaRatio;
-            //상단 여백
-            GUILayout.Space(KTabPadding);
-            //검색창, 생성버튼
-            DrawSearchBar();
-            //테이블 그리기
-            DrawTable(detailHeight);
-            //디테일 그리기
-            DrawDetail(detailHeight);
-
-        }
-
+        
+        /// <summary>
+        ///   <para>검색바 그리기</para>
+        /// </summary>
         void DrawSearchBar()
         {
             GUILayout.BeginHorizontal();
@@ -201,14 +204,9 @@ namespace QuestSystem
 
         }
 
-        
-
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        ///   <para>테이블 그리기</para>
+        /// </summary>
         void DrawTable(float detailHeight)
         {
             ColumnHeader = new MultiColumnHeader(new MultiColumnHeaderState(Columns));
@@ -243,7 +241,7 @@ namespace QuestSystem
 
             if (TargetDataList != null)
             {
-                MakePageButton(CurrentPageIndex == 0, "<", 
+                CreatePageButton(CurrentPageIndex == 0, "<", 
                     () => {
                         --CurrentPageIndex;
                         isChangingPage = true;
@@ -252,24 +250,23 @@ namespace QuestSystem
                 {
                     if (KSkipPageIndex == pageIndex)
                     {
-                        MakePageButton(true, "...", () => { });
+                        CreatePageButton(true, "...", () => { });
                     }
                     else
                     {
-                        MakePageButton(pageIndex == CurrentPageIndex, (pageIndex + 1).ToString(), 
+                        CreatePageButton(pageIndex == CurrentPageIndex, (pageIndex + 1).ToString(), 
                             () => {
                                 CurrentPageIndex = pageIndex;
                                 isChangingPage = true;
                             });
                     }
                 }
-                MakePageButton(CurrentPageIndex == MaxPageIndex, ">", 
+                CreatePageButton(CurrentPageIndex == MaxPageIndex, ">", 
                     () => {
                         ++CurrentPageIndex;
                         isChangingPage = true;
                     });
             }
-            
             
             GUILayout.Space(TabPosition.width * 0.1f);
             GUILayout.EndHorizontal();
@@ -285,7 +282,10 @@ namespace QuestSystem
             EditorGUI.DrawRect(tableBottomBarRect, new Color32(221, 221, 221, 255));
         }
         
-        void MakePageButton(bool isDisabled, string buttonText, Action buttonAction)
+        /// <summary>
+        ///   <para>페이지 버튼 생성</para>
+        /// </summary>
+        void CreatePageButton(bool isDisabled, string buttonText, Action buttonAction)
         {
             EditorGUI.BeginDisabledGroup(isDisabled);
             if (GUILayout.Button(buttonText))
@@ -294,18 +294,10 @@ namespace QuestSystem
             }
             EditorGUI.EndDisabledGroup();
         }
-
-        protected virtual void DrawTableProcess()
-        {
-            
-        }
-
-
         
-        
-        
-        
-        
+        /// <summary>
+        ///   <para>디테일 그리기</para>
+        /// </summary>
         void DrawDetail(float detailHeight)
         {
             DetailScrollPosition = GUILayout.BeginScrollView(DetailScrollPosition, "TE ElementBackground",
@@ -313,17 +305,44 @@ namespace QuestSystem
             DrawDetailProcess();
             GUILayout.EndScrollView();
         }
-
-        protected virtual void DrawDetailProcess()
-        {
-            
-        }
-
-
-        protected virtual void ResizeColumn()
-        {
-        }
         
         
+
+        
+        
+        #region AbstractFunction
+        
+        /// <summary>
+        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        /// </summary>
+        protected abstract bool IsSameData(T ta, T tb);
+        
+        /// <summary>
+        ///   <para>현재 페이지 새롭게 그리기</para>
+        /// </summary>
+        protected abstract void RefreshPageListProcess();
+        
+        /// <summary>
+        ///   <para>조회 실행</para>
+        /// </summary>
+        protected abstract void ActionSearch();
+        
+        /// <summary>
+        ///   <para>테이블 그리기</para>
+        /// </summary>
+        protected abstract void DrawTableProcess();
+        
+        /// <summary>
+        ///   <para>세부 정보 그리기</para>
+        /// </summary>
+        protected abstract void DrawDetailProcess();
+        
+        /// <summary>
+        ///   <para>테이블 컬럼 resize될시 실행</para>
+        /// </summary>
+        protected abstract void ResizeColumn();
+        
+        #endregion
+
     }
 }

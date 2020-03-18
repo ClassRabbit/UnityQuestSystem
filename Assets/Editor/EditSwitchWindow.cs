@@ -19,20 +19,20 @@ namespace QuestSystem
             DeleteSuccess,
         }
         
-        private string KCheckFailEmptySwitchIdText = "SwitchId가 입력되지 않았습니다.";
-        private string KCheckFailOverlapIdText = "SwitchId가 중복되었습니다.";
-        private string KCheckFailEmptyQuestIdFormatText = "QuestId가 입력되지 않았습니다 : 상태 {0} - {1}번";
-        private string KCheckFailNotExistQuestIdFormatText = "생성되지 않은 QuestId 입니다. : 상태 {0} - {1}번 - {2}";
+        private const string KCheckFailEmptySwitchIdText = "SwitchId가 입력되지 않았습니다.";
+        private const string KCheckFailOverlapIdText = "SwitchId가 중복되었습니다.";
+        private const string KCheckFailEmptyQuestIdFormatText = "QuestId가 입력되지 않았습니다 : 상태 {0} - {1}번";
+        private const string KCheckFailNotExistQuestIdFormatText = "생성되지 않은 QuestId 입니다. : 상태 {0} - {1}번 - {2}";
 
         
-        private string KWindowTitleText = "SwitchData 생성";
-        private string KSwitchIdText = "SwitchId";
-        private string KQuestIdText = "QuestId";
-        private string KStateFormatText = "상태 {0}";
-        private string KStateAddFormatText = "상태 {0} 추가";
-        private string KDeleteStateText = "상태 삭제";
-        private string KAddOperText = "연산 추가";
-        private string KStateResultText = "결과 : ";
+        private const string KWindowTitleText = "SwitchData 생성";
+        private const string KSwitchIdText = "SwitchId";
+        private const string KQuestIdText = "QuestId";
+        private const string KStateFormatText = "상태 {0}";
+        private const string KStateAddFormatText = "상태 {0} 추가";
+        private const string KDeleteStateText = "상태 삭제";
+        private const string KAddOperText = "연산 추가";
+        private const string KStateResultText = "결과 : ";
 
         #endregion
 

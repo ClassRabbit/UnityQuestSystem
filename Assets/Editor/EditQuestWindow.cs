@@ -22,12 +22,13 @@ namespace QuestSystem
         }
 
         
-        private string KCreateFailEmptyIdText = "QuestId가 입력되지 않았습니다.";
-        private string KCreateFailOverlapIdText = "QuestId가 중복되었습니다.";
-        private string KDeleteFailUseSwitchText = "SwitchData에서 사용 중인 QuestData는 삭제할 수 없습니다.";
+        private const string KCreateFailEmptyIdText = "QuestId가 입력되지 않았습니다.";
+        private const string KCreateFailOverlapIdText = "QuestId가 중복되었습니다.";
+        private const string KDeleteFailUseSwitchText = "SwitchData에서 사용 중인 QuestData는 삭제할 수 없습니다.";
 
-        private string KWindowTitleText = "QuestData 생성";
-        private string KQuestIdText = "QuestId";
+        private const string KWindowTitleText = "QuestData 생성";
+        private const string KQuestIdText = "QuestId";
+        
         #endregion
         
         

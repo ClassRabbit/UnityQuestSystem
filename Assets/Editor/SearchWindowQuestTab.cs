@@ -9,21 +9,38 @@ namespace QuestSystem
 
     internal class SearchWindowQuestTab : SearchWindowTab<QuestData>
     {
-        private const int KQuestPerPage = 100;
+        #region Const
 
+        private const int KQuestPerPage = 100;
+        private const string KQuestIdText = "QuestId";
+
+        #endregion
+        
+        #region Variable
+        
         protected override int MaxPageIndex => (TargetDataList.Count - 1) / KQuestPerPage;
 
+        #endregion
 
-        internal void EnableProcess()
-        {
-            
-        }
-        
-        protected override bool CompareData(QuestData ta, QuestData tb)
+        /// <summary>
+        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        /// </summary>
+        protected override bool IsSameData(QuestData ta, QuestData tb)
         {
             return ta.QuestId == tb.QuestId;
         }
-
+        
+        /// <summary>
+        ///   <para>현재 페이지 새롭게 그리기</para>
+        /// </summary>
+        protected override void RefreshPageListProcess()
+        {
+            // 추가 행동 없음
+        }
+        
+        /// <summary>
+        ///   <para>조회 실행</para>
+        /// </summary>
         protected override void ActionSearch()
         {
             if (IsSearch)
@@ -39,7 +56,9 @@ namespace QuestSystem
             }
         }
 
-
+        /// <summary>
+        ///   <para>테이블 그리기</para>
+        /// </summary>
         protected override void DrawTableProcess()
         {
             List<QuestData> targetQuestDataList = TargetDataList;
@@ -79,7 +98,9 @@ namespace QuestSystem
             }
         }
 
-
+        /// <summary>
+        ///   <para>세부 정보 그리기</para>
+        /// </summary>
         protected override void DrawDetailProcess()
         {
             if (SelectedDataIndex.HasValue)
@@ -111,14 +132,16 @@ namespace QuestSystem
             }
         }
 
-
+        /// <summary>
+        ///   <para>테이블 컬럼 resize될시 실행</para>
+        /// </summary>
         protected override void ResizeColumn()
         {
             Columns = new MultiColumnHeaderState.Column[]
             {
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("QuestId"),
+                    headerContent = new GUIContent(KQuestIdText),
                     width = TabPosition.width * 0.3f,
                     minWidth = TabPosition.width * 0.2f,
                     maxWidth = TabPosition.width * 0.7f,
@@ -127,7 +150,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent("Description"),
+                    headerContent = new GUIContent(KDescriptionText),
                     width = TabPosition.width * 0.7f,
                     minWidth = TabPosition.width * 0.3f,
                     maxWidth = TabPosition.width * 0.8f,

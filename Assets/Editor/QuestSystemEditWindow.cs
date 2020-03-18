@@ -10,15 +10,15 @@ namespace QuestSystem
     {
         #region Const
 
-        protected string KConfirmText = "확인";
-        protected string KDescriptionText = "설명";
-        protected string KCreateText = "생성";
-        protected string KUpdateText = "수정";
-        protected string KDeleteText = "삭제";
+        protected const string KConfirmText = "확인";
+        protected const string KDescriptionText = "설명";
+        protected const string KCreateText = "생성";
+        protected const string KUpdateText = "수정";
+        protected const string KDeleteText = "삭제";
         
-        protected string KCreateSuccessText = "생성되었습니다.";
-        protected string KUpdateSuccessText = "수정되었습니다.";
-        protected string KDeleteSuccessText = "삭제되었습니다.";
+        protected const string KCreateSuccessText = "생성되었습니다.";
+        protected const string KUpdateSuccessText = "수정되었습니다.";
+        protected const string KDeleteSuccessText = "삭제되었습니다.";
 
         #endregion
         
@@ -52,7 +52,7 @@ namespace QuestSystem
         #endregion
         
         
-        #region VirtualFunction
+        #region AbstractFunction
 
         /// <summary>
         ///   <para>확인창 구성하는 행동</para>
