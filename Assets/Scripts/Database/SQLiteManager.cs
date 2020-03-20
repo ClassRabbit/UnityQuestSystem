@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 #endif
 using System.Collections.Generic;
+using System.Text;
 using SQLite4Unity3d;
 using UnityEngine;
 
@@ -236,6 +237,25 @@ namespace QuestSystem
         public List<SwitchComponentData> GetAllSwitchComponentDataList()
         {
             return _connection.Query<SwitchComponentData>(KQueryGetAllSwitchComponentDataList);
+        }
+        
+        
+        private const string KQueryGetSwitchComponentDataListByQuestId = @"SELECT DISTINCT SwitchId FROM SwitchComponentData 
+            WHERE QuestId IN ({0})";
+        public List<SwitchComponentData> GetSwitchComponentDataListByQuestId(List<string> questIdList)
+        {
+            if (questIdList == null || 0 == questIdList.Count)
+            {
+                return new List<SwitchComponentData>();
+            }
+            
+            var stringBuilder = new StringBuilder($"'{questIdList[0]}'");
+            for (int questIdListIdx = 0; questIdListIdx < questIdList.Count; ++questIdListIdx)
+            {
+                stringBuilder.Append($", '{questIdList[questIdListIdx]}'");
+            }
+            
+            return _connection.Query<SwitchComponentData>(string.Format(KQueryGetSwitchComponentDataListByQuestId, stringBuilder.ToString()));
         }
         
 #endregion

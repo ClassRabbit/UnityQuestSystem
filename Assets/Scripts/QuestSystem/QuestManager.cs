@@ -46,24 +46,53 @@ public class QuestManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    ///   <para>이번 프래임에 해결된 QuestId들을 캐시해두다 한번에 조회해서 스위치를 업데이트한다.</para>
+    /// </summary>
     private void Update()
     {
         if (_clearedQuestIdList.Count != 0)
         {
             foreach (var questId in _clearedQuestIdList)
             {
-                if (!_clearedQuestSet.Contains(questId))
-                {
-                    _clearedQuestSet.Add(questId);
-                }
+                ClearQuest(questId);
+            }
+
+            var componentDataList = SQLiteManager.Instance.GetSwitchComponentDataListByQuestId(_clearedQuestIdList);
+
+            foreach (var componentData  in componentDataList)
+            {
+                UpdateSwitch(componentData.SwitchId);
             }
             
+            
             _clearedQuestIdList.Clear();
-//            UpdateSwitch();
         }
     }
 
+    public void ClearQuest(string questId)
+    {
+        if (!_clearedQuestSet.Contains(questId))
+        {
+            _clearedQuestSet.Add(questId);
+        }
+    }
+
+    
+    /// <summary>
+    ///   <para>프레임 도중 강제로 스위치를 갱신하는 함수.</para>
+    /// </summary>
+    public void ForcedUpdateSwitchFrame()
+    {
+        Update();
+    }
+
+    
+    /// <summary>
+    ///     <para>
+    ///        씬 로딩시 현재 씬에 대한 SwitchController를 파악해서 Dictionary화 해둔다
+    ///     </para>
+    /// </summary>
     IEnumerator SetSwitchDic()
     {
         _switchDataDic.Clear();
@@ -74,6 +103,7 @@ public class QuestManager : MonoBehaviour
             var switchId = switchController.SwitchId;
             if (!_switchDataDic.ContainsKey(switchId))
             {
+                //스위치 데이터 생성중 
                 var switchData = SwitchData.CreateSwitchData(switchId);
                 if (switchData == null)
                 {
@@ -99,7 +129,7 @@ public class QuestManager : MonoBehaviour
         SwitchData switchData = null;
         if (_switchDataDic.TryGetValue(switchId, out switchData))
         {
-//            switchData.Action(switchData.GetResult(_clearedQuestSet));
+            switchData.Action(switchData.GetResult(_clearedQuestSet));
         }
     }
 }

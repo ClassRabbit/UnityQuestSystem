@@ -6,7 +6,14 @@ using UnityEngine;
 
 public class SwitchData
 {
+    enum EOperator
+    {
+        AND,
+        OR
+    }
+    
     public string SwitchId { get; private set; }
+    public bool DefaultResult { get; private set; }
     
     public List<List<SwitchComponentData>> StateList { get; private set; }
 
@@ -14,28 +21,61 @@ public class SwitchData
 
     public Action<bool> Action { get; set; }
 
-    private SwitchData(string switchId, List<List<SwitchComponentData>> stateList,
+    private SwitchData(SwitchDescriptionData descriptionData, List<List<SwitchComponentData>> stateList,
         List<SwitchStateResultData> resultList)
     {
-        SwitchId = switchId;
+        SwitchId = descriptionData.SwitchId;
+        DefaultResult = descriptionData.DefaultResult;
         StateList = stateList;
         ResultList = resultList;
     }
 
-//    public bool GetResult(HashSet<string> clearedQuestSet)
-//    {
-//        int result = false;
-//        for (int i = 0; i < StateList.Count; ++i)
-//        {
-//            
-//        }
-//    }
+    /// <summary>
+    ///   <para>해결된 QuestSet을 조회해서 현재 스위치의 상태를 결정함</para>
+    /// </summary>
+    public bool GetResult(HashSet<string> clearedQuestSet)
+    {
+        bool result = DefaultResult;
+        //isOn된 마지막 상태의 결과로 설정한다. 
+        for (int stateIdx = StateList.Count - 1; stateIdx >= 0; --stateIdx)
+        {
+            bool isOn = clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+            
+            for (int stateComponentIdx = 1; stateComponentIdx < StateList[stateIdx].Count; ++stateComponentIdx)
+            {
+                if (StateList[stateIdx][0].Operator == EOperator.AND.ToString())
+                {
+                    isOn = isOn & clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+                }
+                else
+                {
+                    isOn = isOn | clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+                }
+            }
 
+            if (isOn)
+            {
+                result = ResultList[stateIdx].Result;
+                break;
+            }
+        }
 
+        return result;
+    }
+
+    /// <summary>
+    ///   <para>SwitchData 생성 팩토리 메서드, 생성 도중 오류가 생길 수 있는 점에 대한 대처방안</para>
+    /// </summary>
     public static SwitchData CreateSwitchData(string switchId)
     {
         try
         {
+            var descriptionData = SQLiteManager.Instance.GetSwitchDescriptionData(switchId);
+            if (null == descriptionData)
+            {
+                return null;
+            }
+            
             var componentDataList = SQLiteManager.Instance.GetSwitchComponentDataList(switchId);
             if (0 == componentDataList.Count)
             {
@@ -64,7 +104,7 @@ public class SwitchData
             }
             
         
-            var switchData = new SwitchData(switchId, stateList, resultList);
+            var switchData = new SwitchData(descriptionData, stateList, resultList);
 
             return switchData;
         }
