@@ -124,10 +124,13 @@ namespace QuestSystem
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(3);
-
+                
                 bool beforeWordWrap = EditorStyles.label.wordWrap;
+                var beforeWordAlignment = EditorStyles.label.alignment;
                 EditorStyles.label.wordWrap = true;
-                GUILayout.Label(questData.Description, EditorStyles.label);
+                EditorStyles.label.alignment = TextAnchor.UpperLeft;
+                GUILayout.Label(questData.Description, EditorStyles.label,  GUILayout.Width(TabPosition.width - 10), GUILayout.ExpandHeight(true));
+                EditorStyles.label.alignment = beforeWordAlignment;
                 EditorStyles.label.wordWrap = beforeWordWrap;
             }
         }

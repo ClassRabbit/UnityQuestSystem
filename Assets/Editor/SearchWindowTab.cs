@@ -291,6 +291,7 @@ namespace QuestSystem
             if (GUILayout.Button(buttonText))
             {
                 buttonAction();
+                TableScrollPosition = Vector2.zero;
             }
             EditorGUI.EndDisabledGroup();
         }

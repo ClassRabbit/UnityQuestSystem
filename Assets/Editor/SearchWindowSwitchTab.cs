@@ -14,9 +14,10 @@ namespace QuestSystem
 
         private const int KSwitchPerPage = 10;
         private const string KSwitchIdText = "SwitchId";
+        private const string KDefaultResultText = "기본 결과";
         private const string KStateText = "상태";
         private const string KFormulaText = "계산식";
-        private const string KStateResultText = "결과";
+        private const string KStateResultText = "상태 결과";
 
         #endregion
 
@@ -129,6 +130,14 @@ namespace QuestSystem
                     GUILayout.EndVertical();
                     
                     GUILayout.BeginVertical();
+                    if (GUILayout.Button(descriptionData.DefaultResult.ToString(), "FrameBox",
+                        GUILayout.Width(ColumnHeader.GetColumn(1).width - 10), GUILayout.Height(25 * resultList.Count + 4 * (resultList.Count - 1))))
+                    {
+                        SelectedDataIndex = switchIdx;
+                    }
+                    GUILayout.EndVertical();
+                    
+                    GUILayout.BeginVertical();
                     while (componentList.Count > componentListIdx)
                     {
                         int currentState = componentList[componentListIdx].State;
@@ -146,19 +155,19 @@ namespace QuestSystem
                         
                         GUILayout.BeginHorizontal();
                         if (GUILayout.Button(currentState.ToString(), "FrameBox",
-                            GUILayout.Width(ColumnHeader.GetColumn(1).width - 8)))
+                            GUILayout.Width(ColumnHeader.GetColumn(2).width)))
                         {
                             SelectedDataIndex = switchIdx;
                         }
                         
                         if (GUILayout.Button(stringBuilder.ToString(), "FrameBox",
-                            GUILayout.Width(ColumnHeader.GetColumn(2).width - 6)))
+                            GUILayout.Width(ColumnHeader.GetColumn(3).width)))
                         {
                             SelectedDataIndex = switchIdx;
                         }
                         
                         if (GUILayout.Button(resultList[resultListIdx].Result.ToString(), "FrameBox",
-                            GUILayout.Width(ColumnHeader.GetColumn(3).width)))
+                            GUILayout.Width(ColumnHeader.GetColumn(4).width)))
                         {
                             SelectedDataIndex = switchIdx;
                         }
@@ -207,8 +216,11 @@ namespace QuestSystem
                 GUILayout.Space(3);
 
                 bool beforeWordWrap = EditorStyles.label.wordWrap;
+                var beforeWordAlignment = EditorStyles.label.alignment;
                 EditorStyles.label.wordWrap = true;
-                GUILayout.Label(descriptionData.Description, EditorStyles.label);
+                EditorStyles.label.alignment = TextAnchor.UpperLeft;
+                GUILayout.Label(descriptionData.Description, EditorStyles.label, GUILayout.Width(TabPosition.width - 10), GUILayout.ExpandHeight(true));
+                EditorStyles.label.alignment = beforeWordAlignment;
                 EditorStyles.label.wordWrap = beforeWordWrap;
             }
         }
@@ -231,6 +243,15 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
+                    headerContent = new GUIContent(KDefaultResultText),
+                    width = TabPosition.width * 0.1f,
+                    minWidth = TabPosition.width * 0.1f,
+                    maxWidth = TabPosition.width * 0.4f,
+                    autoResize = true,
+                    headerTextAlignment = TextAlignment.Center
+                },
+                new MultiColumnHeaderState.Column()
+                {
                     headerContent = new GUIContent(KStateText),
                     width = TabPosition.width * 0.15f,
                     minWidth = TabPosition.width * 0.1f,
@@ -241,7 +262,7 @@ namespace QuestSystem
                 new MultiColumnHeaderState.Column()
                 {
                     headerContent = new GUIContent(KFormulaText),
-                    width = TabPosition.width * 0.5f,
+                    width = TabPosition.width * 0.4f,
                     minWidth = TabPosition.width * 0.3f,
                     maxWidth = TabPosition.width * 0.7f,
                     autoResize = true,

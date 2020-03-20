@@ -32,7 +32,8 @@ namespace QuestSystem
         private const string KStateAddFormatText = "상태 {0} 추가";
         private const string KDeleteStateText = "상태 삭제";
         private const string KAddOperText = "연산 추가";
-        private const string KStateResultText = "결과 : ";
+        private const string KStartResultText = "기본 결과 : ";
+        private const string KStateResultText = "상태 결과 : ";
 
         #endregion
 
@@ -97,7 +98,7 @@ namespace QuestSystem
             _stateResultDataList = new List<SwitchStateResultData>();
             foreach (var stateResultData in stateResultDataList)
             {
-                stateResultDataList.Add(stateResultData);
+                _stateResultDataList.Add(stateResultData);
             }
         }
         
@@ -192,7 +193,23 @@ namespace QuestSystem
                 GUILayout.Space(10);
                 GUILayout.Label(KDescriptionText);
                 _descriptionData.Description = GUILayout.TextArea(_descriptionData.Description, GUILayout.Height(100));
-                GUILayout.Space(10);
+                
+                
+                //시작결과
+                GUILayout.BeginHorizontal(GUILayout.Width(150));
+                GUILayout.Space(position.width * 0.5f - 75);
+                GUILayout.BeginVertical();
+                GUILayout.Space(18);
+                GUILayout.Label(KStartResultText);
+                GUILayout.EndVertical();
+                var defaultResultText = _descriptionData.DefaultResult.ToString();
+                if (GUILayout.Button(defaultResultText, "GroupBox", GUILayout.Width(100)))
+                {
+                    _descriptionData.DefaultResult = !_descriptionData.DefaultResult;
+                }
+                GUILayout.EndHorizontal();
+                
+                GUILayout.Space(15);
                 
                 //팝업내용 만들기
                 string[] popupTexts = new string[_stateList.Count + 1];
@@ -239,7 +256,7 @@ namespace QuestSystem
                 
                 GUILayout.Space(20);
                 
-                GUILayout.BeginVertical(GUILayout.Height(position.height - 320));
+                GUILayout.BeginVertical(GUILayout.Height(position.height - 362));
                 
                 //디폴트 퀘스트아이디 인풋
                 _stateList[_stateIndex][0].QuestId = EditorGUILayout.TextField(KQuestIdText, _stateList[_stateIndex][0].QuestId);
