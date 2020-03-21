@@ -8,21 +8,28 @@ using System.Text;
 using SQLite4Unity3d;
 using UnityEngine;
 
+
 namespace QuestSystem
 {
     public class SQLiteManager
     {
-        private SQLiteManager()
-        {
-        }
-
         private SQLiteConnection _connection;
-
-        public static SQLiteManager Instance { get; } = new SQLiteManager();
+        
+        public static SQLiteManager Instance { get; }
 
         public bool IsConnected
         {
             get => null != _connection;
+        }
+        
+        
+        
+        static SQLiteManager()
+        {
+            Instance = new SQLiteManager();
+        }
+        private SQLiteManager()
+        {
         }
 
 
@@ -94,6 +101,42 @@ namespace QuestSystem
         {
             _connection.Close();
         }
+        
+        
+        
+        T CreateData<T>(T t)
+        {
+            _connection.Insert(t);
+            return t;
+        }
+        
+        T UpdateData<T>(T t)
+        {
+            _connection.RunInTransaction(() =>
+            {
+                _connection.Update(t);
+            });
+            return t;
+        }
+        
+        T DeleteData<T>(T t)
+        {
+            _connection.RunInTransaction(() =>
+            {
+                _connection.Delete(t);
+            });
+            return t;
+        }
+
+        IEnumerable<T> GetDatas<T>() where T : new()
+        {
+            return _connection.Table<T>();
+        }
+        
+
+
+
+        #region QuestData
 
         public QuestData CreateQuestData(QuestData questData)
         {
@@ -125,13 +168,14 @@ namespace QuestSystem
         {
             return _connection.Query<QuestData>(KQueryGetAllQuestDataList);
         }
-
-
-#region SwitchData
         
-        //
-        // SwitchDescriptionData
-        //
+
+        #endregion
+        
+
+
+        #region SwitchDescriptionData
+        
         public SwitchDescriptionData CreateSwitchDescriptionData(SwitchDescriptionData descriptionData)
         {
             return CreateData(descriptionData);
@@ -173,10 +217,12 @@ namespace QuestSystem
             return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSearchSwitchDescriptionDataList, searchText));
         }
         
+        #endregion
         
-        //
-        // SwitchStateResultData
-        //
+        
+        
+        #region SwitchStateResultData
+        
         public SwitchStateResultData CreateSwitchStateResultData(SwitchStateResultData stateResultData)
         {
             return CreateData(stateResultData);
@@ -206,10 +252,13 @@ namespace QuestSystem
             return _connection.Query<SwitchStateResultData>(KQueryGetAllSwitchStateResultDataList);
         }
         
+        #endregion
+
         
-        //
-        // SwitchComponentData
-        //
+        
+        #region SwitchComponentData
+
+        
         public SwitchComponentData CreateSwitchComponentData(SwitchComponentData stateResultData)
         {
             return CreateData(stateResultData);
@@ -258,39 +307,9 @@ namespace QuestSystem
             return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSwitchDescriptionDataListByQuestId, stringBuilder.ToString()));
         }
         
-#endregion
+        #endregion
         
 
-
-        T CreateData<T>(T t)
-        {
-            _connection.Insert(t);
-            return t;
-        }
-        
-        T UpdateData<T>(T t)
-        {
-            _connection.RunInTransaction(() =>
-            {
-                _connection.Update(t);
-            });
-            return t;
-        }
-        
-        T DeleteData<T>(T t)
-        {
-            _connection.RunInTransaction(() =>
-            {
-                _connection.Delete(t);
-            });
-            return t;
-        }
-
-        IEnumerable<T> GetDatas<T>() where T : new()
-        {
-            return _connection.Table<T>();
-        }
-        
         
     }
 

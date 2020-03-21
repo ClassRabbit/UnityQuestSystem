@@ -73,22 +73,29 @@ public class SwitchData
             var descriptionData = SQLiteManager.Instance.GetSwitchDescriptionData(switchId);
             if (null == descriptionData)
             {
+                Debug.LogError("description null");
                 return null;
             }
             
             var componentDataList = SQLiteManager.Instance.GetSwitchComponentDataList(switchId);
             if (0 == componentDataList.Count)
             {
+                Debug.LogError("componentDataList null");
                 return null;
             }
         
             var resultList = SQLiteManager.Instance.GetSwitchStateResultDataList(switchId);
             if (0 == resultList.Count)
             {
+                Debug.LogError("resultList null");
                 return null;
             }
-
+            
             var stateList = new List<List<SwitchComponentData>>(componentDataList[componentDataList.Count - 1].State + 1);
+            for (int stateIdx = 0; stateIdx < stateList.Capacity; ++stateIdx)
+            {
+                stateList.Add(new List<SwitchComponentData>());
+            }
             if (resultList.Count != stateList.Count)
             {
                 return null;
@@ -110,6 +117,7 @@ public class SwitchData
         }
         catch (Exception e)
         {
+            Debug.LogError($"ERROR : CreateSwitchData ({switchId})");
             Debug.LogError(e.StackTrace);
             return null;
         }
