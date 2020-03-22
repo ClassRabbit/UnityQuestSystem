@@ -60,7 +60,7 @@ namespace QuestSystem
             }
             
             IsUpdate = true;
-            _questData = questData;
+            _questData = new QuestData(questData.QuestId, questData.Description);
         }
 
 
