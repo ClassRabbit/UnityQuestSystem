@@ -154,6 +154,8 @@ namespace QuestSystem
         /// </summary>
         protected override void ResetEditor()
         {
+            IsUpdate = false;
+            _stateIndex = 0;
             _descriptionData = new SwitchDescriptionData();
             _stateList = new List<List<SwitchComponentData>>();
             _stateResultDataList = new List<SwitchStateResultData>();
@@ -228,6 +230,8 @@ namespace QuestSystem
                 {
                     AddState();
                 }
+                
+                //현재 상태 삭제하기
                 EditorGUI.BeginDisabledGroup(_stateIndex == 0);
                 {
                     if (GUILayout.Button(DeleteStateText, GUILayout.Width(120)))
@@ -237,6 +241,7 @@ namespace QuestSystem
                         {
                             _stateIndex = _stateList.Count - 1;
                         }
+                        _stateResultDataList.Remove(_stateResultDataList[_stateIndex]);
                     }
                 }
                 EditorGUI.EndDisabledGroup();
@@ -427,21 +432,13 @@ namespace QuestSystem
         /// </summary>
         private void DeleteProcess()
         {
-            SQLiteManager.Instance.DeleteSwitchDescriptionData(_descriptionData);
+            var switchId = _descriptionData.SwitchId;
             
-            foreach (var state in _stateList)
-            {
-                foreach (var stateComponent in state)
-                {
-                    SQLiteManager.Instance.DeleteSwitchComponentData(stateComponent);
-                }
-            }
+            SQLiteManager.Instance.DeleteSwitchDescriptionDataBySwitchId(switchId);
+            
+            SQLiteManager.Instance.DeleteSwitchComponentDataBySwitchId(switchId);
 
-            for (int stateIdx = 0; stateIdx < _stateResultDataList.Count; ++stateIdx)
-            {
-                var stateResult = _stateResultDataList[stateIdx];
-                SQLiteManager.Instance.DeleteSwitchStateResultData(stateResult);
-            }
+            SQLiteManager.Instance.DeleteSwitchStateResultDataBySwitchId(switchId);
         }
 
     }

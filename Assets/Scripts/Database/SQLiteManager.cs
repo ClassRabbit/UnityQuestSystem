@@ -135,6 +135,7 @@ namespace QuestSystem
         
 
 
+        
 
         #region QuestData
 
@@ -154,19 +155,19 @@ namespace QuestSystem
         }
 
         
-        private const string KQueryGetQuestData = @"SELECT * FROM QuestData 
+        private const string QueryGetQuestData = @"SELECT * FROM QuestData 
                 WHERE QuestId = '{0}'";
         public QuestData GetQuestData(string questId)
         {
-            var questDataList = _connection.Query<QuestData>(string.Format(KQueryGetQuestData, questId));
+            var questDataList = _connection.Query<QuestData>(string.Format(QueryGetQuestData, questId));
             return questDataList.Count == 1 ? questDataList[0] : null;
         }
         
-        private const string KQueryGetAllQuestDataList = @"SELECT * FROM QuestData 
+        private const string QueryGetAllQuestDataList = @"SELECT * FROM QuestData 
                 ORDER BY QuestId";
         public List<QuestData> GetAllQuestDataList()
         {
-            return _connection.Query<QuestData>(KQueryGetAllQuestDataList);
+            return _connection.Query<QuestData>(QueryGetAllQuestDataList);
         }
         
 
@@ -191,30 +192,37 @@ namespace QuestSystem
             return DeleteData(descriptionData);
         }
         
-        private const string KQueryGetSwitchDescriptionData = @"SELECT * FROM SwitchDescriptionData 
+        private const string QueryDeleteSwitchDescriptionDataBySwitchId = @"Delete FROM SwitchDescriptionData 
+                WHERE SwitchId = '{0}'";
+        public List<SwitchDescriptionData> DeleteSwitchDescriptionDataBySwitchId(string switchId)
+        {
+            return _connection.Query<SwitchDescriptionData>(string.Format(QueryDeleteSwitchDescriptionDataBySwitchId, switchId));
+        }
+        
+        private const string QueryGetSwitchDescriptionData = @"SELECT * FROM SwitchDescriptionData 
                 WHERE SwitchId = '{0}'";
         public SwitchDescriptionData GetSwitchDescriptionData(string switchId)
         {
-            var descriptionDataList = _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSwitchDescriptionData, switchId));
+            var descriptionDataList = _connection.Query<SwitchDescriptionData>(string.Format(QueryGetSwitchDescriptionData, switchId));
             return descriptionDataList.Count == 1 ? descriptionDataList[0] : null;
         }
         
-        private const string KQueryGetAllSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
+        private const string QueryGetAllSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
                 ORDER BY SwitchId";
         public List<SwitchDescriptionData> GetAllSwitchDescriptionDataList()
         {
-            return _connection.Query<SwitchDescriptionData>(KQueryGetAllSwitchDescriptionDataList);
+            return _connection.Query<SwitchDescriptionData>(QueryGetAllSwitchDescriptionDataList);
         }
 
 
-        private const string KQueryGetSearchSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
+        private const string QueryGetSearchSwitchDescriptionDataList = @"SELECT * FROM SwitchDescriptionData 
                 WHERE SwitchId IN 
                     (SELECT DISTINCT SwitchId FROM SwitchComponentData 
                         WHERE QuestId LIKE '%{0}%' 
                         OR SwitchId LIKE '%{0}%')";
         public List<SwitchDescriptionData> GetSearchSwitchDescriptionDataList(string searchText)
         {
-            return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSearchSwitchDescriptionDataList, searchText));
+            return _connection.Query<SwitchDescriptionData>(string.Format(QueryGetSearchSwitchDescriptionDataList, searchText));
         }
         
         #endregion
@@ -238,19 +246,28 @@ namespace QuestSystem
             return DeleteData(stateResultData);
         }
         
-        private const string KQueryGetSwitchStateResultData = @"SELECT * FROM SwitchStateResultData
+        private const string QueryDeleteSwitchStateResultDataBySwitchId = @"Delete FROM SwitchStateResultData 
+                WHERE SwitchId = '{0}'";
+        public List<SwitchStateResultData> DeleteSwitchStateResultDataBySwitchId(string switchId)
+        {
+            return _connection.Query<SwitchStateResultData>(string.Format(QueryDeleteSwitchStateResultDataBySwitchId, switchId));
+        }
+        
+        private const string QueryGetSwitchStateResultData = @"SELECT * FROM SwitchStateResultData
             WHERE SwitchId = '{0}'
             ORDER BY State";
         public List<SwitchStateResultData> GetSwitchStateResultDataList(string switchId)
         {
-            return _connection.Query<SwitchStateResultData>(string.Format(KQueryGetSwitchStateResultData, switchId));
+            return _connection.Query<SwitchStateResultData>(string.Format(QueryGetSwitchStateResultData, switchId));
         }
         
-        private const string KQueryGetAllSwitchStateResultDataList = @"SELECT * FROM SwitchStateResultData";
+        private const string QueryGetAllSwitchStateResultDataList = @"SELECT * FROM SwitchStateResultData";
         public List<SwitchStateResultData> GetAllSwitchStateResultDataList()
         {
-            return _connection.Query<SwitchStateResultData>(KQueryGetAllSwitchStateResultDataList);
+            return _connection.Query<SwitchStateResultData>(QueryGetAllSwitchStateResultDataList);
         }
+        
+        
         
         #endregion
 
@@ -274,22 +291,29 @@ namespace QuestSystem
             return DeleteData(stateResultData);
         }
         
-        private const string KQueryGetSwitchComponentDataList = @"SELECT * FROM SwitchComponentData 
+        private const string QueryDeleteSwitchComponentDataBySwitchId = @"Delete FROM SwitchComponentData 
+                WHERE SwitchId = '{0}'";
+        public List<SwitchComponentData> DeleteSwitchComponentDataBySwitchId(string switchId)
+        {
+            return _connection.Query<SwitchComponentData>(string.Format(QueryDeleteSwitchComponentDataBySwitchId, switchId));
+        }
+        
+        private const string QueryGetSwitchComponentDataList = @"SELECT * FROM SwitchComponentData 
                 WHERE SwitchId = '{0}'
                 ORDER BY State";
         public List<SwitchComponentData> GetSwitchComponentDataList(string switchId)
         {
-            return _connection.Query<SwitchComponentData>(string.Format(KQueryGetSwitchComponentDataList, switchId));
+            return _connection.Query<SwitchComponentData>(string.Format(QueryGetSwitchComponentDataList, switchId));
         }
         
-        private const string KQueryGetAllSwitchComponentDataList = @"SELECT * FROM SwitchComponentData";
+        private const string QueryGetAllSwitchComponentDataList = @"SELECT * FROM SwitchComponentData";
         public List<SwitchComponentData> GetAllSwitchComponentDataList()
         {
-            return _connection.Query<SwitchComponentData>(KQueryGetAllSwitchComponentDataList);
+            return _connection.Query<SwitchComponentData>(QueryGetAllSwitchComponentDataList);
         }
         
         
-        private const string KQueryGetSwitchDescriptionDataListByQuestId = @"SELECT DISTINCT SwitchId FROM SwitchComponentData 
+        private const string QueryGetSwitchDescriptionDataListByQuestId = @"SELECT DISTINCT SwitchId FROM SwitchComponentData 
             WHERE QuestId IN ({0})";
         public List<SwitchDescriptionData> GetSwitchDescriptionDataListByQuestId(List<string> questIdList)
         {
@@ -304,7 +328,7 @@ namespace QuestSystem
                 stringBuilder.Append($", '{questIdList[questIdListIdx]}'");
             }
             
-            return _connection.Query<SwitchDescriptionData>(string.Format(KQueryGetSwitchDescriptionDataListByQuestId, stringBuilder.ToString()));
+            return _connection.Query<SwitchDescriptionData>(string.Format(QueryGetSwitchDescriptionDataListByQuestId, stringBuilder.ToString()));
         }
         
         #endregion

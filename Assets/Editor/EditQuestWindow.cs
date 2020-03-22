@@ -109,6 +109,7 @@ namespace QuestSystem
         
         protected override void ResetEditor()
         {
+            IsUpdate = false;
             _questData.QuestId = string.Empty;
             _questData.Description = string.Empty;
         }

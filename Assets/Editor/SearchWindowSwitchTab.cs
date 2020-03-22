@@ -81,9 +81,9 @@ namespace QuestSystem
         /// </summary>
         protected override void ActionSearch()
         {
-            if (IsSearch)
+            if (!string.IsNullOrEmpty(UsingSearchText))
             {
-                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(SearchText);
+                SearchResultDataList = SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(UsingSearchText);
             }
             SetTablePageData();
         }

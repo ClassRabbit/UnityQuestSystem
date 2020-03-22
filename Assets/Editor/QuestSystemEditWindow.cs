@@ -26,7 +26,7 @@ namespace QuestSystem
         #region Variable
 
         // 확인창 크기
-        private Rect _confirmWindowRect = new Rect(0, 0, 400, 300);
+        private Rect _confirmWindowRect = new Rect(0, 0, 300, 220);
         protected Rect ConfirmWindowRect => _confirmWindowRect;
 
         protected string ConfirmWindowNoticeText { get; set; } = string.Empty;
@@ -41,13 +41,13 @@ namespace QuestSystem
         {
             ConfirmWindowProcess();
             
-            GUILayout.Space(140);
+            GUILayout.Space(80);
 
             var beforeWordAlignment = EditorStyles.label.alignment;
             EditorStyles.label.alignment = TextAnchor.MiddleCenter;
             GUILayout.Label(ConfirmWindowNoticeText, EditorStyles.label);
             EditorStyles.label.alignment = beforeWordAlignment;
-            GUILayout.Space(140);
+            GUILayout.Space(80);
             
             if (GUILayout.Button(ConfirmTextValue))
             {

@@ -28,7 +28,7 @@ namespace QuestSystem
         
         protected List<T> DataList { get; set; }
         protected List<T> SearchResultDataList { get; set; }
-        protected List<T> TargetDataList => IsSearch ? SearchResultDataList : DataList;
+        protected List<T> TargetDataList => string.IsNullOrEmpty(UsingSearchText) ? DataList : SearchResultDataList;
         
         //텝의 영역
         protected Rect TabPosition { get; set; }
@@ -41,9 +41,11 @@ namespace QuestSystem
         protected MultiColumnHeader ColumnHeader { get; set; }
         protected MultiColumnHeaderState.Column[] Columns { get; set; }
         
-        //조회 
-        protected bool IsSearch { get; set; } = false;
-        protected string SearchText { get; set; }
+        
+        //입력바에 입력된 텍스트값
+        protected string InputSearchText { get; set; } = string.Empty;
+        //현재 검색에 적용된 텍스트값
+        protected string UsingSearchText { get; set; } = string.Empty;
         
         
         //선택된 Row
@@ -84,7 +86,7 @@ namespace QuestSystem
             }
             DataList = dataList;
 
-            if (IsSearch)
+            if (!string.IsNullOrEmpty(UsingSearchText))
             {
                 ActionSearch();
             }
@@ -184,14 +186,14 @@ namespace QuestSystem
                 GUILayout.BeginVertical();
                 {
                     GUILayout.Space(4);
-                    SearchText = GUILayout.TextField(SearchText, "SearchTextField");
+                    InputSearchText = GUILayout.TextField(InputSearchText, "SearchTextField");
                 }
                 GUILayout.EndVertical();
 
                 if (GUILayout.Button("조회", GUILayout.Width(100)))
                 {
                     SelectedDataIndex = null;
-                    IsSearch = !string.IsNullOrEmpty(SearchText);
+                    UsingSearchText = InputSearchText;
                     TableScrollPosition = Vector2.zero;
                     ActionSearch();
                     

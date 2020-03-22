@@ -43,12 +43,12 @@ namespace QuestSystem
         /// </summary>
         protected override void ActionSearch()
         {
-            if (IsSearch)
+            if (!string.IsNullOrEmpty(UsingSearchText))
             {
                 SearchResultDataList = new List<QuestData>();
                 foreach(var data in DataList)
                 {
-                    if (data.QuestId.Contains(SearchText) || data.Description.Contains(SearchText))
+                    if (data.QuestId.Contains(UsingSearchText) || data.Description.Contains(UsingSearchText))
                     {
                         SearchResultDataList.Add(data);
                     }
