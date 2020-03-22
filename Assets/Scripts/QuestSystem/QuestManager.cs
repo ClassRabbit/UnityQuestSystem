@@ -36,7 +36,7 @@ namespace QuestSystem
 
 
         /// <summary>
-        ///   <para>QuestId들을 캐시해두다 한번에 조회해서 스위치를 업데이트한다.</para>
+        ///   <para>클리어 QuestId들을 캐시해두다 한번에 조회해서 스위치를 업데이트한다.</para>
         /// </summary>
         public void Update()
         {
@@ -107,10 +107,10 @@ namespace QuestSystem
             }
 
             var switchId = switchController.SwitchId;
-            if (!_switchDataDic.ContainsKey(switchId))
+            if (!_switchDataDic.TryGetValue(switchId, out var switchData))
             {
                 //스위치 데이터 생성
-                var switchData = SwitchData.CreateSwitchData(switchId);
+                switchData = SwitchData.CreateSwitchData(switchId);
                 if (switchData == null)
                 {
                     return;
@@ -126,7 +126,8 @@ namespace QuestSystem
 
             switchController.IsRegistered = true;
 
-            AddRequireUpdatingSwitchIdList(switchId);
+//            AddRequireUpdatingSwitchIdList(switchId);
+            switchController.OnSwitch(switchData.CurrentResult);
         }
 
 
@@ -151,7 +152,7 @@ namespace QuestSystem
         {
             if (_switchDataDic.TryGetValue(switchId, out var switchData))
             {
-                switchData.Action(switchData.GetResult(_clearedQuestDic));
+                switchData.Update(_clearedQuestDic);
             }
         }
 
@@ -173,7 +174,7 @@ namespace QuestSystem
         {
             if (_switchDataDic.TryGetValue(switchId, out var switchData))
             {
-                return switchData.GetResult(_clearedQuestDic);
+                return switchData.CurrentResult;
             }
             else
             {

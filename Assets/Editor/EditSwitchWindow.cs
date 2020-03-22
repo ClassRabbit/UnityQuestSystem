@@ -192,12 +192,6 @@ namespace QuestSystem
                 }
                 GUILayout.EndHorizontal();
                 
-                //스위치 설명
-                GUILayout.Space(10);
-                GUILayout.Label(DescriptionTextValue);
-                _descriptionData.Description = GUILayout.TextArea(_descriptionData.Description, GUILayout.Height(100));
-                
-                
                 //시작결과
                 GUILayout.BeginHorizontal(GUILayout.Width(150));
                 GUILayout.Space(position.width * 0.5f - 75);
@@ -211,6 +205,17 @@ namespace QuestSystem
                     _descriptionData.DefaultResult = !_descriptionData.DefaultResult;
                 }
                 GUILayout.EndHorizontal();
+                
+                //스위치 설명
+                GUILayout.Space(10);
+                GUILayout.Label(DescriptionTextValue);
+                _descriptionData.Description = GUILayout.TextArea(_descriptionData.Description, GUILayout.Height(100));
+                
+                
+                //
+                //
+                //
+                //
                 
                 GUILayout.Space(15);
                 

@@ -10,7 +10,8 @@ namespace QuestSystem
 
         public QuestData()
         {
-            
+            QuestId = string.Empty;
+            Description = string.Empty;
         }
 
         public QuestData(string questId, string description)

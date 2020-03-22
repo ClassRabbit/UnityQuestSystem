@@ -11,15 +11,10 @@ public class TestColorChanger : SwitchController
 
     private MeshRenderer _meshRenderer = null;
 
-    private void Start()
+    protected override void Start()
     {
-        QuestManager.Instance.RegisterSwitch(this);
         _meshRenderer = GetComponent<MeshRenderer>();
-    }
-
-    private void OnDestroy()
-    {
-        QuestManager.Instance.CancelRegisterSwitch(this);
+        base.Start();
     }
 
     public override void OnSwitch(bool isOn)

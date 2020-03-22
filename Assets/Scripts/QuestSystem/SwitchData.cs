@@ -19,13 +19,25 @@ public class SwitchData
 
     public List<SwitchStateResultData> ResultList { get; private set; }
 
-    public Action<bool> Action { get; set; }
+    private Action<bool> _action;
+    public Action<bool> Action
+    {
+        get => _action;
+        set
+        {
+            _action = value;
+            value(CurrentResult);
+        }
+    }
+
+    public bool CurrentResult { get; set; }
 
     private SwitchData(SwitchDescriptionData descriptionData, List<List<SwitchComponentData>> stateList,
         List<SwitchStateResultData> resultList)
     {
         SwitchId = descriptionData.SwitchId;
         DefaultResult = descriptionData.DefaultResult;
+        CurrentResult = descriptionData.DefaultResult;
         StateList = stateList;
         ResultList = resultList;
     }
@@ -33,7 +45,7 @@ public class SwitchData
     /// <summary>
     ///   <para>해결된 QuestSet을 조회해서 현재 스위치의 상태를 결정함</para>
     /// </summary>
-    public bool GetResult(Dictionary<string, bool> clearedQuestDic)
+    public void Update(Dictionary<string, bool> clearedQuestDic)
     {
         bool result = DefaultResult;
         //isOn된 마지막 상태의 결과로 설정한다. 
@@ -60,7 +72,11 @@ public class SwitchData
             }
         }
 
-        return result;
+        if (CurrentResult != result)
+        {
+            CurrentResult = result;
+            _action?.Invoke(CurrentResult);
+        }
     }
 
     /// <summary>
@@ -121,8 +137,6 @@ public class SwitchData
             Debug.LogError(e.StackTrace);
             return null;
         }
-        
-        
-        
     }
+    
 }

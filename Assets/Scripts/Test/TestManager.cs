@@ -13,27 +13,29 @@ public class TestManager : MonoBehaviour
     [SerializeField] 
     private string _dbName = string.Empty;
     
+    //
+    // SQLite 연결
+    //
     private void Awake()
     {
         SQLiteManager.Instance.Connect(_dbName);
         
     }
-
-    private void Update()
+    
+    //
+    // 매 프래임마다 클리어된 퀘스트들이 있다면 관련된 Switch들을 업데이트 해준다.
+    // 이런 방식으로 구현하면 클리어한다면 SwitchController가 다음 프래임부터 변화된 값을 사용한다는 점에서 주의
+    // 해당 프래임에서 변화된 값을 사용을 원할 시 QuestManager.Instance.QuestClear()이후 QuestManager.Instance.Update()를 직접 실행
+    //
+    private void LateUpdate()
     {
         QuestManager.Instance.Update();
     }
 
-    
 
-    
-    
-    
-    
-    
-    
-#if QUEST_SYSTEM_TEST
 
+
+    #region Test
 
     [SerializeField] 
     private bool _isShowingTestUi = false;
@@ -124,7 +126,7 @@ public class TestManager : MonoBehaviour
         {
             GUI.Label(new Rect(0, idx * RowHeight, RowWidth, RowHeight), switchData.SwitchId, customStyle);
 
-            bool switchResult = switchData.GetResult(QuestManager.Instance.ClearedQuestDic);
+            bool switchResult = switchData.CurrentResult;
             customStyle.normal.textColor = switchResult ? new Color32(117, 179, 255, 255) : new Color32(255, 177, 177, 255);
             GUI.Label(new Rect(120, idx * RowHeight, RowWidth, RowHeight), switchResult.ToString(), customStyle);
             customStyle.normal.textColor = Color.white;
@@ -170,12 +172,7 @@ public class TestManager : MonoBehaviour
         
         GUI.EndScrollView();
     }
-    
-    
 
-#endif
+    #endregion
     
-    
-    
-
 }
