@@ -24,13 +24,6 @@ public class TestColorChanger : SwitchController
 
     public override void OnSwitch(bool isOn)
     {
-        if (isOn)
-        {
-            _meshRenderer.material.color = _color;
-        }
-        else
-        {
-            _meshRenderer.material.color = Color.black;
-        }
+        _meshRenderer.material.color = isOn ? _color : Color.black;
     }
 }

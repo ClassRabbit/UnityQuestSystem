@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using QuestSystem;
 using UnityEngine;
 
-using System.Linq;
 #if QUEST_SYSTEM_TEST
-
+using System.Linq;
 #endif
 
 public class TestManager : MonoBehaviour
