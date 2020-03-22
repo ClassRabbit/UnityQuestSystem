@@ -33,23 +33,23 @@ public class SwitchData
     /// <summary>
     ///   <para>해결된 QuestSet을 조회해서 현재 스위치의 상태를 결정함</para>
     /// </summary>
-    public bool GetResult(HashSet<string> clearedQuestSet)
+    public bool GetResult(Dictionary<string, bool> clearedQuestDic)
     {
         bool result = DefaultResult;
         //isOn된 마지막 상태의 결과로 설정한다. 
         for (int stateIdx = StateList.Count - 1; stateIdx >= 0; --stateIdx)
         {
-            bool isOn = clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+            bool isOn = clearedQuestDic[StateList[stateIdx][0].QuestId];
             
             for (int stateComponentIdx = 1; stateComponentIdx < StateList[stateIdx].Count; ++stateComponentIdx)
             {
-                if (StateList[stateIdx][0].Operator == EOperator.AND.ToString())
+                if (StateList[stateIdx][stateComponentIdx].Operator == EOperator.AND.ToString())
                 {
-                    isOn = isOn & clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+                    isOn = isOn & clearedQuestDic[StateList[stateIdx][stateComponentIdx].QuestId];
                 }
                 else
                 {
-                    isOn = isOn | clearedQuestSet.Contains(StateList[stateIdx][0].QuestId);
+                    isOn = isOn | clearedQuestDic[StateList[stateIdx][stateComponentIdx].QuestId];
                 }
             }
 

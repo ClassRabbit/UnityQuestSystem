@@ -7,7 +7,9 @@ using UnityEngine;
 public class QuestManager
 {
     Dictionary<string, SwitchData> _switchDataDic = new Dictionary<string, SwitchData>();
-    HashSet<string> _clearedQuestSet = new HashSet<string>();
+    public Dictionary<string, SwitchData> SwitchDataDic => _switchDataDic;
+    Dictionary<string, bool> _clearedQuestDic= new Dictionary<string, bool>();
+    public Dictionary<string, bool> ClearedQuestDic => _clearedQuestDic;
     
     
     List<string> _clearedQuestIdList = new List<string>();
@@ -19,6 +21,12 @@ public class QuestManager
     }
     private QuestManager()
     {
+        //퀘스트값들을 Dictionary화
+        var questDataList = SQLiteManager.Instance.GetAllQuestDataList();
+        foreach (var questData in questDataList)
+        {
+            _clearedQuestDic.Add(questData.QuestId, false);
+        }
     }
     
     public static QuestManager Instance { get; }
@@ -32,11 +40,6 @@ public class QuestManager
         //이번 프래임에 클리어된 questId대기열 목록을 ClearSet에 등록
         if (0 != _clearedQuestIdList.Count)
         {
-            foreach (var questId in _clearedQuestIdList)
-            {
-                ClearQuest(questId);
-            }
-            
             //클리어된 questId와 관련된 SwitchDescriptionData를 가져와서 업데이트 대기열에 등록
             var descriptionDataList = SQLiteManager.Instance.GetSwitchDescriptionDataListByQuestId(_clearedQuestIdList);
             foreach (var descriptionData  in descriptionDataList)
@@ -61,11 +64,17 @@ public class QuestManager
     /// <summary>
     ///   <para>해당 QuestId를 해결함. 이번 프래임 이후 해당 QuestId와 관련된 스위치 업데이트</para>
     /// </summary>
-    public void ClearQuest(string questId)
+    public bool ClearQuest(string questId)
     {
-        if (!_clearedQuestSet.Contains(questId))
+        if (_clearedQuestDic.ContainsKey(questId))
         {
-            _clearedQuestSet.Add(questId);
+            _clearedQuestDic[questId] = true;
+            _clearedQuestIdList.Add(questId);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -114,12 +123,57 @@ public class QuestManager
         AddRequireUpdatingSwitchIdList(switchId);
     }
     
+    
+    public void CancelRegisterSwitch(SwitchController switchController)
+    {
+        if (switchController.IsRegistered)
+        {
+            return;
+        }
+
+        var switchId = switchController.SwitchId;
+        if (_switchDataDic.ContainsKey(switchId))
+        {
+            _switchDataDic[switchController.SwitchId].Action -= switchController.OnSwitch;
+        }
+
+        switchController.IsRegistered = false;
+    }
+    
 
     void UpdateSwitch(string switchId)
     {
         if (_switchDataDic.TryGetValue(switchId, out var switchData))
         {
-            switchData.Action(switchData.GetResult(_clearedQuestSet));
+            switchData.Action(switchData.GetResult(_clearedQuestDic));
         }
     }
+
+
+
+    public bool IsQuestClear(string questId)
+    {
+        if (_clearedQuestDic.ContainsKey(questId))
+        {
+            return _clearedQuestDic[questId];
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool GetSwitchResult(string switchId)
+    {
+        if (_switchDataDic.TryGetValue(switchId, out var switchData))
+        {
+            return switchData.GetResult(_clearedQuestDic);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
 }

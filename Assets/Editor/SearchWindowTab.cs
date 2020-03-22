@@ -192,7 +192,7 @@ namespace QuestSystem
                 {
                     SelectedDataIndex = null;
                     IsSearch = !string.IsNullOrEmpty(SearchText);
-                    
+                    TableScrollPosition = Vector2.zero;
                     ActionSearch();
                     
                     RefreshPageList();
