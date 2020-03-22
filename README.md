@@ -101,10 +101,10 @@ Quest - [Q0003]가 클리어 된 상태일때
 ~~~
 QuestSystem -> PreferencesWindow
 ~~~
+  
+[![PreferencesWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png ){: target="_blank"}  
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png"></a></center>
-
-2. 원하는 데이터베이스명을 입력하고 **결정** 버튼을 누르면 프로젝트 내로 StreamingAssets 디렉토리에 SQLite 데이터베이스가 생성됩니다.
+1. 원하는 데이터베이스명을 입력하고 **결정** 버튼을 누르면 프로젝트 내로 StreamingAssets 디렉토리에 SQLite 데이터베이스가 생성됩니다.
 ~~~
 Assets/StreamingAssets/DatabaseName
 ~~~
@@ -115,11 +115,11 @@ Assets/StreamingAssets/DatabaseName
 QuestSystem -> EditQuestWindow
 ~~~
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png"></a></center>
+[![QuestWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png ){: target="_blank"}  
 
-1. **QuestId**를 입력합니다. (필수)
-2. **설명**을 입력합니다. (선택)
-3. **생성** 버튼을 누릅니다.
+2. **QuestId**를 입력합니다. (필수)
+3. **설명**을 입력합니다. (선택)
+4. **생성** 버튼을 누릅니다.
 
 ### Switch 생성하기
 1. Unity 에디터에서 UnityQuestSystem의 EditSwitchWindow 엽니다.
@@ -127,7 +127,7 @@ QuestSystem -> EditQuestWindow
 QuestSystem -> EditSwitchWindow
 ~~~
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png"></a></center>
+[![SwitchWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png ){: target="_blank"}  
 
 2. **QuestId**를 입력합니다. (필수)
 3. **기본 결과**를 선택합니다.
@@ -141,10 +141,10 @@ Unity 에디터에서 UnityQuestSystem의 SearchWindow를 통해서 생성된 Qu
 QuestSystem -> SearchWindow
 ~~~
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png"></a></center>
+[![SearchQuestWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png ){: target="_blank"}  
+<br>
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png"></a></center>
-
+[![SearchSwitchWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png ){: target="_blank"}  
 
 ### 게임 구현하기
 1. 추상 클래스 **UnityQuestSystem.SwitchController**를 상속하여 Switch의 결과 값에 따른 행동을 구현합니다.
@@ -165,8 +165,7 @@ UnityQuestSystem.QuestManager.Instance.Update();
 ### Demo
 Assets/Scene/QuestSystem/SampleScene
 
-<center><a href="https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg" target="_blank"><img src="https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg"></a></center>
-
+[![Demo](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg)](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg ){: target="_blank"}  
 
 
 ## Built with
