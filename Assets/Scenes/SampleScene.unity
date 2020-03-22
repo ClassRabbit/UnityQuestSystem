@@ -541,8 +541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6a681211ca31704e966c9ab59565df3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTest: 1
   _dbName: Test.db
+  _isShowingTestUi: 1
 --- !u!4 &1417778740
 Transform:
   m_ObjectHideFlags: 0
