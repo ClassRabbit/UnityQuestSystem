@@ -40,7 +40,7 @@ namespace QuestSystem
         private void OnFocus()
         {
             string beforeDatabaseName = DatabaseName;
-            DatabaseName = PreferencesWindow.QuestSystemDatabaseName;
+            DatabaseName = QuestSystemPreferencesWindow.QuestSystemDatabaseName;
             
             if (!SQLiteManager.Instance.IsConnected)
             {
