@@ -79,36 +79,27 @@ namespace QuestSystem
         
         
         #region Virtualfunction
-        
+
         /// <summary>
         ///   <para>OnEnable 되었을 시 행동</para>
         /// </summary>
-        protected virtual void EnableProcess()
-        {
-        }
+        protected abstract void EnableProcess();
 
         /// <summary>
         ///   <para>Database 변경되었을 시 행동</para>
         /// </summary>
-        protected virtual void RefreshProcess()
-        {
-        }
+        protected abstract void RefreshProcess();
 
-        
         /// <summary>
         ///   <para>OnGUI 되었을 시 행동</para>
         /// </summary>
-        protected virtual void GUIProcess()
-        {
-        }
+        protected abstract void GUIProcess();
 
         /// <summary>
         ///   <para>OnFocus 되었을 시 행동</para>
         /// </summary>
-        protected virtual void FocusProcess()
-        {
-        }
-        
+        protected abstract void FocusProcess();
+
         #endregion
     }
     

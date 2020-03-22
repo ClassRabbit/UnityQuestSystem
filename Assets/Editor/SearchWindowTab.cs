@@ -12,14 +12,14 @@ namespace QuestSystem
 
         #region Const
 
-        private const int KSkipPageIndex = -1;
-        private const float KDetailAreaRatio = 0.25f;
-        private const int KPageAreaHeight = 100;
-        private const int KTopAreaHeight = 60;
-        private const int KTabPadding = 10;
+        private const int SkipPageIndex = -1;
+        private const float DetailAreaRatio = 0.25f;
+        private const int PageAreaHeight = 100;
+        private const int TopAreaHeight = 60;
+        private const int TabPadding = 10;
         
         
-        protected const string KDescriptionText = "세부 정보";
+        protected const string DescriptionTextValue = "세부 정보";
 
         #endregion
 
@@ -119,9 +119,9 @@ namespace QuestSystem
                 ResizeColumn();
             }
 
-            float detailHeight = TabPosition.height * KDetailAreaRatio;
+            float detailHeight = TabPosition.height * DetailAreaRatio;
             //상단 여백
-            GUILayout.Space(KTabPadding);
+            GUILayout.Space(TabPadding);
             //검색창, 생성버튼
             DrawSearchBar();
             //테이블 그리기
@@ -148,7 +148,7 @@ namespace QuestSystem
             //... 추가
             if (CurrentPageIndex - additionalAreaCount > 1)
             {
-                ShowingPageIndexList.Add(KSkipPageIndex);
+                ShowingPageIndexList.Add(SkipPageIndex);
             }
 
             for (int i = CurrentPageIndex - additionalAreaCount; i <= CurrentPageIndex + additionalAreaCount && i <= MaxPageIndex; ++i)
@@ -162,7 +162,7 @@ namespace QuestSystem
 
             if (ShowingPageIndexList[ShowingPageIndexList.Count - 1] + 1 < MaxPageIndex - 1)
             {
-                ShowingPageIndexList.Add(KSkipPageIndex);
+                ShowingPageIndexList.Add(SkipPageIndex);
             }
 
             
@@ -200,7 +200,7 @@ namespace QuestSystem
             }
             GUILayout.EndHorizontal();
             
-            GUILayout.Space(KTabPadding);
+            GUILayout.Space(TabPadding);
 
         }
 
@@ -227,7 +227,7 @@ namespace QuestSystem
  
             GUILayout.Space(25);
             
-            GUILayout.BeginArea(new Rect(TabPosition.x, TabPosition.y + KTopAreaHeight, TabPosition.width, TabPosition.height - KPageAreaHeight - detailHeight));
+            GUILayout.BeginArea(new Rect(TabPosition.x, TabPosition.y + TopAreaHeight, TabPosition.width, TabPosition.height - PageAreaHeight - detailHeight));
             TableScrollPosition = GUILayout.BeginScrollView(TableScrollPosition);
             {
                 DrawTableProcess();
@@ -248,7 +248,7 @@ namespace QuestSystem
                     });
                 foreach (var pageIndex in ShowingPageIndexList)
                 {
-                    if (KSkipPageIndex == pageIndex)
+                    if (SkipPageIndex == pageIndex)
                     {
                         CreatePageButton(true, "...", () => { });
                     }
@@ -278,7 +278,7 @@ namespace QuestSystem
             
             //맨밑 경계
             GUILayout.Space(7);
-            Rect tableBottomBarRect = new Rect(TabPosition.x, TabPosition.height - detailHeight - KTabPadding, TabPosition.width, 4);
+            Rect tableBottomBarRect = new Rect(TabPosition.x, TabPosition.height - detailHeight - TabPadding, TabPosition.width, 4);
             EditorGUI.DrawRect(tableBottomBarRect, new Color32(221, 221, 221, 255));
         }
         
@@ -302,7 +302,7 @@ namespace QuestSystem
         void DrawDetail(float detailHeight)
         {
             DetailScrollPosition = GUILayout.BeginScrollView(DetailScrollPosition, "TE ElementBackground",
-                GUILayout.Height(TabPosition.height * KDetailAreaRatio), GUILayout.Width(TabPosition.width), GUILayout.ExpandWidth(false));
+                GUILayout.Height(TabPosition.height * DetailAreaRatio), GUILayout.Width(TabPosition.width), GUILayout.ExpandWidth(false));
             DrawDetailProcess();
             GUILayout.EndScrollView();
         }

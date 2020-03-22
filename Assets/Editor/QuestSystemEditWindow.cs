@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace QuestSystem
 {
@@ -10,23 +11,26 @@ namespace QuestSystem
     {
         #region Const
 
-        protected const string KConfirmText = "확인";
-        protected const string KDescriptionText = "설명";
-        protected const string KCreateText = "생성";
-        protected const string KUpdateText = "수정";
-        protected const string KDeleteText = "삭제";
+        protected const string ConfirmTextValue = "확인";
+        protected const string DescriptionTextValue = "설명";
+        protected const string CreateTextValue = "생성";
+        protected const string UpdateTextValue = "수정";
+        protected const string DeleteTextValue = "삭제";
         
-        protected const string KCreateSuccessText = "생성되었습니다.";
-        protected const string KUpdateSuccessText = "수정되었습니다.";
-        protected const string KDeleteSuccessText = "삭제되었습니다.";
+        protected const string CreateSuccessTextValue = "생성되었습니다.";
+        protected const string UpdateSuccessTextValue = "수정되었습니다.";
+        protected const string DeleteSuccessTextValue = "삭제되었습니다.";
 
         #endregion
         
         #region Variable
 
         // 확인창 크기
-        private Rect _windowRect = new Rect(0, 0, 400, 300);
-        protected Rect WindowRect => _windowRect;
+        private Rect _confirmWindowRect = new Rect(0, 0, 400, 300);
+        protected Rect ConfirmWindowRect => _confirmWindowRect;
+
+        protected string ConfirmWindowNoticeText { get; set; } = string.Empty;
+        protected Action ConfirmWindowAction { get; set; } = null;
         
         #endregion
 
@@ -36,6 +40,19 @@ namespace QuestSystem
         protected void ConfirmWindow(int unusedWindowID)
         {
             ConfirmWindowProcess();
+            
+            GUILayout.Space(140);
+
+            var beforeWordAlignment = EditorStyles.label.alignment;
+            EditorStyles.label.alignment = TextAnchor.MiddleCenter;
+            GUILayout.Label(ConfirmWindowNoticeText, EditorStyles.label);
+            EditorStyles.label.alignment = beforeWordAlignment;
+            GUILayout.Space(140);
+            
+            if (GUILayout.Button(ConfirmTextValue))
+            {
+                ConfirmWindowAction?.Invoke();
+            }
         }
 
         protected void DrawConfirmWindow(string windowName)
@@ -43,9 +60,9 @@ namespace QuestSystem
             Rect rect = new Rect(0, 0, position.width, position.height);
             EditorGUI.DrawRect(rect, new Color32(0, 0, 0, 122));
             BeginWindows();
-            _windowRect.x = (position.width - _windowRect.width) / 2;
-            _windowRect.y = (position.height - _windowRect.height) / 2;
-            _windowRect = GUILayout.Window(1, _windowRect, ConfirmWindow, windowName);
+            _confirmWindowRect.x = (position.width - _confirmWindowRect.width) / 2;
+            _confirmWindowRect.y = (position.height - _confirmWindowRect.height) / 2;
+            _confirmWindowRect = GUILayout.Window(1, _confirmWindowRect, ConfirmWindow, windowName);
             EndWindows();
         }
 

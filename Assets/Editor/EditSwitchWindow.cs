@@ -19,21 +19,21 @@ namespace QuestSystem
             DeleteSuccess,
         }
         
-        private const string KCheckFailEmptySwitchIdText = "SwitchId가 입력되지 않았습니다.";
-        private const string KCheckFailOverlapIdText = "SwitchId가 중복되었습니다.";
-        private const string KCheckFailEmptyQuestIdFormatText = "QuestId가 입력되지 않았습니다 : 상태 {0} - {1}번";
-        private const string KCheckFailNotExistQuestIdFormatText = "생성되지 않은 QuestId 입니다. : 상태 {0} - {1}번 - {2}";
+        private const string CheckFailEmptySwitchIdText = "SwitchId가 입력되지 않았습니다.";
+        private const string CheckFailOverlapIdText = "SwitchId가 중복되었습니다.";
+        private const string CheckFailEmptyQuestIdFormatText = "QuestId가 입력되지 않았습니다 : 상태 {0} - {1}번";
+        private const string CheckFailNotExistQuestIdFormatText = "생성되지 않은 QuestId 입니다. : 상태 {0} - {1}번 - {2}";
 
         
-        private const string KWindowTitleText = "SwitchData 생성";
-        private const string KSwitchIdText = "SwitchId";
-        private const string KQuestIdText = "QuestId";
-        private const string KStateFormatText = "상태 {0}";
-        private const string KStateAddFormatText = "상태 {0} 추가";
-        private const string KDeleteStateText = "상태 삭제";
-        private const string KAddOperText = "연산 추가";
-        private const string KStartResultText = "기본 결과 : ";
-        private const string KStateResultText = "상태 결과 : ";
+        private const string WindowTitleText = "SwitchData 생성";
+        private const string SwitchIdText = "SwitchId";
+        private const string QuestIdText = "QuestId";
+        private const string StateFormatText = "상태 {0}";
+        private const string StateAddFormatText = "상태 {0} 추가";
+        private const string DeleteStateText = "상태 삭제";
+        private const string AddOperText = "연산 추가";
+        private const string StartResultText = "기본 결과 : ";
+        private const string StateResultText = "상태 결과 : ";
 
         #endregion
 
@@ -51,7 +51,6 @@ namespace QuestSystem
         private List<SwitchStateResultData> _stateResultDataList = new List<SwitchStateResultData>();
         
         private int _stateIndex = 0;
-        private string _confirmText = string.Empty;
         
 
         #endregion
@@ -127,14 +126,17 @@ namespace QuestSystem
                 AddState();
             }
         }
-        
+
+        protected override void RefreshProcess()
+        {
+        }
+
         /// <summary>
         ///   <para>확인창 구성하는 행동</para>
         /// </summary>
         protected override void ConfirmWindowProcess()
         {
-            GUILayout.Label(_confirmText);
-            if (GUILayout.Button(KConfirmText))
+            ConfirmWindowAction = () =>
             {
                 switch (_confirmState)
                 {
@@ -144,8 +146,7 @@ namespace QuestSystem
                         break;
                 }
                 _confirmState = EConfirmState.None;
-                
-            }
+            };
         }
         
         /// <summary>
@@ -168,7 +169,7 @@ namespace QuestSystem
             //로고
             GUILayout.Space(10);
             
-            GUILayout.Label(KWindowTitleText, "DefaultCenteredLargeText");
+            GUILayout.Label(WindowTitleText, "DefaultCenteredLargeText");
             
             GUILayout.Space(10);
             
@@ -182,7 +183,7 @@ namespace QuestSystem
                 {
                     EditorGUI.BeginDisabledGroup(IsUpdate);
                     {
-                        EditorGUILayout.PrefixLabel(KSwitchIdText);
+                        EditorGUILayout.PrefixLabel(SwitchIdText);
                         _descriptionData.SwitchId = GUILayout.TextField(_descriptionData.SwitchId);
                     }
                     EditorGUI.EndDisabledGroup();
@@ -191,7 +192,7 @@ namespace QuestSystem
                 
                 //스위치 설명
                 GUILayout.Space(10);
-                GUILayout.Label(KDescriptionText);
+                GUILayout.Label(DescriptionTextValue);
                 _descriptionData.Description = GUILayout.TextArea(_descriptionData.Description, GUILayout.Height(100));
                 
                 
@@ -200,7 +201,7 @@ namespace QuestSystem
                 GUILayout.Space(position.width * 0.5f - 75);
                 GUILayout.BeginVertical();
                 GUILayout.Space(18);
-                GUILayout.Label(KStartResultText);
+                GUILayout.Label(StartResultText);
                 GUILayout.EndVertical();
                 var defaultResultText = _descriptionData.DefaultResult.ToString();
                 if (GUILayout.Button(defaultResultText, "GroupBox", GUILayout.Width(100)))
@@ -216,9 +217,9 @@ namespace QuestSystem
                 int stateIndex = 0;
                 for (stateIndex = 0; stateIndex < _stateList.Count; ++stateIndex)
                 {
-                    popupTexts[stateIndex] = string.Format(KStateFormatText, stateIndex);
+                    popupTexts[stateIndex] = string.Format(StateFormatText, stateIndex);
                 }
-                popupTexts[stateIndex] = string.Format(KStateAddFormatText, stateIndex);
+                popupTexts[stateIndex] = string.Format(StateAddFormatText, stateIndex);
             
                 //팝업드랍박스
                 GUILayout.BeginHorizontal();
@@ -229,7 +230,7 @@ namespace QuestSystem
                 }
                 EditorGUI.BeginDisabledGroup(_stateIndex == 0);
                 {
-                    if (GUILayout.Button(KDeleteStateText, GUILayout.Width(120)))
+                    if (GUILayout.Button(DeleteStateText, GUILayout.Width(120)))
                     {
                         _stateList.Remove(_stateList[_stateIndex]);
                         if (_stateList.Count <= _stateIndex)
@@ -245,7 +246,7 @@ namespace QuestSystem
                 GUILayout.Space(position.width * 0.5f - 75);
                 GUILayout.BeginVertical();
                 GUILayout.Space(18);
-                GUILayout.Label(KStateResultText);
+                GUILayout.Label(StateResultText);
                 GUILayout.EndVertical();
                 var resultText = _stateResultDataList[_stateIndex].Result.ToString();
                 if (GUILayout.Button(resultText, "GroupBox", GUILayout.Width(100)))
@@ -259,7 +260,7 @@ namespace QuestSystem
                 GUILayout.BeginVertical(GUILayout.Height(position.height - 362));
                 
                 //디폴트 퀘스트아이디 인풋
-                _stateList[_stateIndex][0].QuestId = EditorGUILayout.TextField(KQuestIdText, _stateList[_stateIndex][0].QuestId);
+                _stateList[_stateIndex][0].QuestId = EditorGUILayout.TextField(QuestIdText, _stateList[_stateIndex][0].QuestId);
                 //추가 인풋
                 for (int stateComponentIndex = 1; stateComponentIndex < _stateList[_stateIndex].Count; ++stateComponentIndex)
                 {
@@ -278,7 +279,7 @@ namespace QuestSystem
                     GUILayout.Space(4);
                 }
                 //퀘스트아이디 추가 버튼
-                if (GUILayout.Button(KAddOperText))
+                if (GUILayout.Button(AddOperText))
                 {
                     var switchComponent = new SwitchComponentData();
                     switchComponent.Operator = _operTexts[0];
@@ -293,7 +294,7 @@ namespace QuestSystem
                 if (IsUpdate)
                 {
                     
-                    if (GUILayout.Button(KUpdateText))
+                    if (GUILayout.Button(UpdateTextValue))
                     {
                         if (CheckProcess())
                         {
@@ -306,18 +307,18 @@ namespace QuestSystem
                             _confirmState = EConfirmState.Fail;
                         }
                     }
-                    if (GUILayout.Button(KDeleteText))
+                    if (GUILayout.Button(DeleteTextValue))
                     {
                         //SwitchData 구성요소인지 체크
                         DeleteProcess();
-                        _confirmText = KDeleteSuccessText;
+                        ConfirmWindowNoticeText = DeleteSuccessTextValue;
                         _confirmState = EConfirmState.DeleteSuccess;
                     }
                     
                 }
                 else
                 {
-                    if (GUILayout.Button(KCreateText))
+                    if (GUILayout.Button(CreateTextValue))
                     {
                         if (CheckProcess())
                         {
@@ -342,7 +343,11 @@ namespace QuestSystem
             
             GUILayout.Space(10);
         }
-        
+
+        protected override void FocusProcess()
+        {
+        }
+
         /// <summary>
         ///   <para>생성을 위한 구성요소 확인.</para>
         /// </summary>
@@ -351,13 +356,13 @@ namespace QuestSystem
             var switchId = _descriptionData.SwitchId;
             if (string.IsNullOrEmpty(switchId))
             {
-                _confirmText = KCheckFailEmptySwitchIdText;
+                ConfirmWindowNoticeText = CheckFailEmptySwitchIdText;
                 return false;
             }
 
             if (!IsUpdate && null != SQLiteManager.Instance.GetSwitchDescriptionData(switchId))
             {
-                _confirmText = KCheckFailOverlapIdText;
+                ConfirmWindowNoticeText = CheckFailOverlapIdText;
                 return false;
             }
 
@@ -369,13 +374,13 @@ namespace QuestSystem
                     var stateComponent = state[componentIdx];
                     if (string.IsNullOrEmpty(stateComponent.QuestId))
                     {
-                        _confirmText = string.Format(KCheckFailEmptyQuestIdFormatText, stateIdx, componentIdx);
+                        ConfirmWindowNoticeText = string.Format(CheckFailEmptyQuestIdFormatText, stateIdx, componentIdx);
                         return false;
                     }
                     
                     if (null == SQLiteManager.Instance.GetQuestData(stateComponent.QuestId))
                     {
-                        _confirmText = string.Format(KCheckFailNotExistQuestIdFormatText, stateIdx, componentIdx, stateComponent.QuestId);
+                        ConfirmWindowNoticeText = string.Format(CheckFailNotExistQuestIdFormatText, stateIdx, componentIdx, stateComponent.QuestId);
                         return false;
                     }
 
@@ -414,7 +419,7 @@ namespace QuestSystem
                 
                 SQLiteManager.Instance.CreateSwitchStateResultData(stateResult);
             }
-            _confirmText = IsUpdate ? KUpdateSuccessText : KCreateSuccessText;
+            ConfirmWindowNoticeText = IsUpdate ? UpdateSuccessTextValue : CreateSuccessTextValue;
         }
         
         /// <summary>

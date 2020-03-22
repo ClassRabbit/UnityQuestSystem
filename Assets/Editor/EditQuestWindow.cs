@@ -22,12 +22,12 @@ namespace QuestSystem
         }
 
         
-        private const string KCreateFailEmptyIdText = "QuestId가 입력되지 않았습니다.";
-        private const string KCreateFailOverlapIdText = "QuestId가 중복되었습니다.";
-        private const string KDeleteFailUseSwitchText = "SwitchData에서 사용 중인 QuestData는 삭제할 수 없습니다.";
+        private const string CreateFailEmptyIdText = "QuestId가 입력되지 않았습니다.";
+        private const string CreateFailOverlapIdText = "QuestId가 중복되었습니다.";
+        private const string DeleteFailUseSwitchText = "SwitchData에서 사용 중인 QuestData는 삭제할 수 없습니다.";
 
-        private const string KWindowTitleText = "QuestData 생성";
-        private const string KQuestIdText = "QuestId";
+        private const string WindowTitleText = "QuestData 생성";
+        private const string QuestIdText = "QuestId";
         
         #endregion
         
@@ -70,30 +70,29 @@ namespace QuestSystem
         /// </summary>
         protected override void ConfirmWindowProcess()
         {
-            string confirmText = String.Empty;
             switch (_confirmState)
             {
                 case EConfirmState.CreateSuccess:
-                    confirmText = KCreateSuccessText;
+                    ConfirmWindowNoticeText = CreateSuccessTextValue;
                     break;
                 case EConfirmState.CreateFailEmptyId:
-                    confirmText = KCreateFailEmptyIdText;
+                    ConfirmWindowNoticeText = CreateFailEmptyIdText;
                     break;
                 case EConfirmState.CreateFailOverlapId:
-                    confirmText = KCreateFailOverlapIdText;
+                    ConfirmWindowNoticeText = CreateFailOverlapIdText;
                     break;
                 case EConfirmState.UpdateSuccess:
-                    confirmText = KUpdateSuccessText;
+                    ConfirmWindowNoticeText = UpdateSuccessTextValue;
                     break;
                 case EConfirmState.DeleteSuccess:
-                    confirmText = KDeleteSuccessText;
+                    ConfirmWindowNoticeText = DeleteSuccessTextValue;
                     break;
                 case EConfirmState.DeleteFailUseSwitch:
-                    confirmText = KDeleteFailUseSwitchText;
+                    ConfirmWindowNoticeText = DeleteFailUseSwitchText;
                     break;
             }
-            GUILayout.Label(confirmText);
-            if (GUILayout.Button(KConfirmText))
+
+            ConfirmWindowAction = () =>
             {
                 switch (_confirmState)
                 {
@@ -103,8 +102,9 @@ namespace QuestSystem
                         break;
                 }
                 _confirmState = EConfirmState.None;
-                
-            }
+            };
+            
+            
         }
         
         protected override void ResetEditor()
@@ -112,13 +112,21 @@ namespace QuestSystem
             _questData.QuestId = string.Empty;
             _questData.Description = string.Empty;
         }
-        
-        
+
+
+        protected override void EnableProcess()
+        {
+        }
+
+        protected override void RefreshProcess()
+        {
+        }
+
         protected override void GUIProcess()
         {
             GUILayout.Space(10);
             
-            GUILayout.Label(KWindowTitleText, "DefaultCenteredLargeText");
+            GUILayout.Label(WindowTitleText, "DefaultCenteredLargeText");
             
             GUILayout.Space(10);
             
@@ -129,7 +137,7 @@ namespace QuestSystem
                 {
                     EditorGUI.BeginDisabledGroup(IsUpdate);
                     {
-                        EditorGUILayout.PrefixLabel(KQuestIdText);
+                        EditorGUILayout.PrefixLabel(QuestIdText);
                         _questData.QuestId = GUILayout.TextField(_questData.QuestId);
                     }
                     EditorGUI.EndDisabledGroup();
@@ -138,7 +146,7 @@ namespace QuestSystem
                 
                 //퀘스트 설명
                 GUILayout.Space(10);
-                GUILayout.Label(KDescriptionText);
+                GUILayout.Label(DescriptionTextValue);
                 _questData.Description = GUILayout.TextArea(_questData.Description, GUILayout.Height(position.height - 125 - 10));
                 GUILayout.Space(10);
             
@@ -148,12 +156,12 @@ namespace QuestSystem
                 if (IsUpdate)
                 {
                 
-                    if (GUILayout.Button(KUpdateText))
+                    if (GUILayout.Button(UpdateTextValue))
                     {
                         SQLiteManager.Instance.UpdateQuestData(_questData);
                         _confirmState = EConfirmState.UpdateSuccess;
                     }
-                    if (GUILayout.Button(KDeleteText))
+                    if (GUILayout.Button(DeleteTextValue))
                     {
                         //SwitchData 구성요소인지 체크
                         if (SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(_questData.QuestId).Count() != 0)
@@ -169,7 +177,7 @@ namespace QuestSystem
                 }
                 else
                 {
-                    if (GUILayout.Button(KCreateText))
+                    if (GUILayout.Button(CreateTextValue))
                     {
                         //아이디 채크
                         if (string.IsNullOrEmpty(_questData.QuestId))
@@ -201,10 +209,8 @@ namespace QuestSystem
             GUILayout.Space(10);
         }
 
-        
-    
-        
-        
-    
+        protected override void FocusProcess()
+        {
+        }
     }
 }

@@ -11,14 +11,14 @@ namespace QuestSystem
     {
         #region Const
 
-        private const int KQuestPerPage = 100;
-        private const string KQuestIdText = "QuestId";
+        private const int QuestPerPage = 100;
+        private const string QuestIdTextValue = "QuestId";
 
         #endregion
         
         #region Variable
         
-        protected override int MaxPageIndex => (TargetDataList.Count - 1) / KQuestPerPage;
+        protected override int MaxPageIndex => (TargetDataList.Count - 1) / QuestPerPage;
 
         #endregion
 
@@ -67,8 +67,8 @@ namespace QuestSystem
             {
                 QuestData selectedQuestData = SelectedDataIndex.HasValue ? targetQuestDataList[SelectedDataIndex.Value] : null;
 
-                for (int i = KQuestPerPage * CurrentPageIndex;
-                    i < targetQuestDataList.Count && i < KQuestPerPage * (CurrentPageIndex + 1);
+                for (int i = QuestPerPage * CurrentPageIndex;
+                    i < targetQuestDataList.Count && i < QuestPerPage * (CurrentPageIndex + 1);
                     ++i)
                 {
                     var questData = targetQuestDataList[i];
@@ -144,7 +144,7 @@ namespace QuestSystem
             {
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KQuestIdText),
+                    headerContent = new GUIContent(QuestIdTextValue),
                     width = TabPosition.width * 0.3f,
                     minWidth = TabPosition.width * 0.2f,
                     maxWidth = TabPosition.width * 0.7f,
@@ -153,7 +153,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KDescriptionText),
+                    headerContent = new GUIContent(DescriptionTextValue),
                     width = TabPosition.width * 0.7f,
                     minWidth = TabPosition.width * 0.3f,
                     maxWidth = TabPosition.width * 0.8f,

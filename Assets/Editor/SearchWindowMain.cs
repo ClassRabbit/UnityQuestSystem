@@ -16,19 +16,16 @@ namespace QuestSystem
         }
 
         
-        private const float KMenubarPadding = 32;
+        private const float MenubarPadding = 32;
     
         private EMode _selectedMode = EMode.Quest;
 
         private SearchWindowQuestTab _questTab = new SearchWindowQuestTab();
         private SearchWindowSwitchTab _switchTab = new SearchWindowSwitchTab();
         
-        protected override void EnableProcess()
-        {
-        } 
-    
-    
-    
+        
+
+
         // Add menu named "My Window" to the Window menu
         [MenuItem("QuestSystem/SearchWindow")]
         static void Init()
@@ -57,6 +54,14 @@ namespace QuestSystem
                     break;
             }
         }
+        
+        protected override void EnableProcess()
+        {
+        }
+
+        protected override void RefreshProcess()
+        {
+        }
 
         protected override void FocusProcess()
         {
@@ -70,7 +75,7 @@ namespace QuestSystem
     
         private Rect GetTabPosition()
         {
-            float padding = KMenubarPadding;
+            float padding = MenubarPadding;
             Rect tabPosition = new Rect(0, padding, position.width, position.height - padding);
             return tabPosition;
         }

@@ -12,12 +12,13 @@ namespace QuestSystem
     {
         #region Const
 
-        private const int KSwitchPerPage = 10;
-        private const string KSwitchIdText = "SwitchId";
-        private const string KDefaultResultText = "기본 결과";
-        private const string KStateText = "상태";
-        private const string KFormulaText = "계산식";
-        private const string KStateResultText = "상태 결과";
+        private const int SwitchPerPage = 10;
+        
+        private const string SwitchIdTextValue = "SwitchId";
+        private const string DefaultResultTextValue = "기본 결과";
+        private const string StateTextValue = "상태";
+        private const string FormulaTextValue = "계산식";
+        private const string StateResultTextValue = "상태 결과";
 
         #endregion
 
@@ -28,7 +29,7 @@ namespace QuestSystem
         private List<List<SwitchComponentData>> _currentPageComponentDataList;
         private List<List<SwitchStateResultData>> _currentPageStateResultDataList;
         
-        protected override int MaxPageIndex => (TargetDataList.Count - 1) / KSwitchPerPage;
+        protected override int MaxPageIndex => (TargetDataList.Count - 1) / SwitchPerPage;
 
         #endregion
         
@@ -44,8 +45,8 @@ namespace QuestSystem
             
             if (targetDataList != null)
             {
-                for (int i = KSwitchPerPage * CurrentPageIndex;
-                    i < targetDataList.Count && i < KSwitchPerPage * (CurrentPageIndex + 1);
+                for (int i = SwitchPerPage * CurrentPageIndex;
+                    i < targetDataList.Count && i < SwitchPerPage * (CurrentPageIndex + 1);
                     ++i)
                 {
                     var descriptionData = targetDataList[i];
@@ -99,9 +100,9 @@ namespace QuestSystem
             {
                 SwitchDescriptionData selectedDescriptionData = SelectedDataIndex.HasValue ? targetDataList[SelectedDataIndex.Value] : null;
                 
-                int firstPageSwitchIdx = KSwitchPerPage * CurrentPageIndex;
+                int firstPageSwitchIdx = SwitchPerPage * CurrentPageIndex;
                 for (int switchIdx = firstPageSwitchIdx;
-                    switchIdx < targetDataList.Count && switchIdx < KSwitchPerPage * (CurrentPageIndex + 1);
+                    switchIdx < targetDataList.Count && switchIdx < SwitchPerPage * (CurrentPageIndex + 1);
                     ++switchIdx)
                 {
                     var descriptionData = targetDataList[switchIdx];
@@ -206,7 +207,7 @@ namespace QuestSystem
                     EditSwitchWindow window = (EditSwitchWindow)EditorWindow.GetWindow(typeof(EditSwitchWindow));
                     window.Show();
                     
-                    int pageSwitchIdx = SelectedDataIndex.Value - (KSwitchPerPage * CurrentPageIndex);
+                    int pageSwitchIdx = SelectedDataIndex.Value - (SwitchPerPage * CurrentPageIndex);
                     var componentList = _currentPageComponentDataList[pageSwitchIdx];
                     var resultList = _currentPageStateResultDataList[pageSwitchIdx];
                     window.UpdateSwitchData(descriptionData, componentList, resultList);
@@ -234,7 +235,7 @@ namespace QuestSystem
             {
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KSwitchIdText),
+                    headerContent = new GUIContent(SwitchIdTextValue),
                     width = TabPosition.width * 0.2f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
@@ -243,7 +244,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KDefaultResultText),
+                    headerContent = new GUIContent(DefaultResultTextValue),
                     width = TabPosition.width * 0.1f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
@@ -252,7 +253,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KStateText),
+                    headerContent = new GUIContent(StateTextValue),
                     width = TabPosition.width * 0.15f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
@@ -261,7 +262,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KFormulaText),
+                    headerContent = new GUIContent(FormulaTextValue),
                     width = TabPosition.width * 0.4f,
                     minWidth = TabPosition.width * 0.3f,
                     maxWidth = TabPosition.width * 0.7f,
@@ -270,7 +271,7 @@ namespace QuestSystem
                 },
                 new MultiColumnHeaderState.Column()
                 {
-                    headerContent = new GUIContent(KStateResultText),
+                    headerContent = new GUIContent(StateResultTextValue),
                     width = TabPosition.width * 0.15f,
                     minWidth = TabPosition.width * 0.1f,
                     maxWidth = TabPosition.width * 0.4f,
