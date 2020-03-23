@@ -1,5 +1,6 @@
 # UnityQuestSystem
-이 프로젝트는 Unity 프로젝트에서 SQLite를 사용해서 구현한 퀘스트 시스템 입니다.
+Unity 프로젝트에서 SQLite를 이용해 구현한 퀘스트 시스템 입니다.  
+UnityQuestSystem을 이용해서 게임의 분기, 오브젝트 온오프 등 다양한 방식을 쉽게 구현할 수 있습니다.
 
 ## 시작하기
 
