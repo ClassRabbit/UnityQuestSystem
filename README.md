@@ -164,9 +164,13 @@ UnityQuestSystem.QuestManager.Instance.Update();
 ~~~
 
 ### Demo
+~~~
 Assets/Scene/QuestSystem/SampleScene
-
+~~~
 [![Demo](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg)](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg )
+
+* **Quest Menu**를 통해서 Quest를 해결할 수 있습니다.
+* **Switch Menu**를 통해서 Scene에 포함된 Switch의 현재 상태 결과를 확인할 수 있습니다.
 
 
 ## Built with
