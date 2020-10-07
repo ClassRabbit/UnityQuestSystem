@@ -49,9 +49,7 @@ namespace QuestSystem
         private SwitchDescriptionData _descriptionData = new SwitchDescriptionData();
         private List<List<SwitchComponentData>> _stateList = new List<List<SwitchComponentData>>();
         private List<SwitchStateResultData> _stateResultDataList = new List<SwitchStateResultData>();
-        
         private int _stateIndex = 0;
-        
 
         #endregion
         

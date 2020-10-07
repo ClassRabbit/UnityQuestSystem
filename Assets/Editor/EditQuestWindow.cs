@@ -40,8 +40,6 @@ namespace QuestSystem
         
         #endregion
 
-        
-        
         [MenuItem("QuestSystem/EditQuestWindow")]
         static void Init()
         {
@@ -63,8 +61,6 @@ namespace QuestSystem
             _questData = new QuestData(questData.QuestId, questData.Description);
         }
 
-
-        
         /// <summary>
         ///   <para>확인창 구성하는 행동</para>
         /// </summary>
@@ -114,7 +110,6 @@ namespace QuestSystem
             _questData.Description = string.Empty;
         }
 
-
         protected override void EnableProcess()
         {
         }
@@ -136,6 +131,7 @@ namespace QuestSystem
                 //퀘스트 아이디
                 GUILayout.BeginHorizontal();
                 {
+                    //QuestId는 수정할 수 없다.
                     EditorGUI.BeginDisabledGroup(IsUpdate);
                     {
                         EditorGUILayout.PrefixLabel(QuestIdText);
@@ -152,52 +148,54 @@ namespace QuestSystem
                 GUILayout.Space(10);
             
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(position.width * 0.2f);
+                {
+                    GUILayout.Space(position.width * 0.2f);
 
-                if (IsUpdate)
-                {
-                
-                    if (GUILayout.Button(UpdateTextValue))
+                    if (IsUpdate)
                     {
-                        SQLiteManager.Instance.UpdateQuestData(_questData);
-                        _confirmState = EConfirmState.UpdateSuccess;
+
+                        if (GUILayout.Button(UpdateTextValue))
+                        {
+                            SQLiteManager.Instance.UpdateQuestData(_questData);
+                            _confirmState = EConfirmState.UpdateSuccess;
+                        }
+                        if (GUILayout.Button(DeleteTextValue))
+                        {
+                            //SwitchData 구성요소인지 체크
+                            if (SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(_questData.QuestId).Count() != 0)
+                            {
+                                _confirmState = EConfirmState.DeleteFailUseSwitch;
+                            }
+                            else
+                            {
+                                SQLiteManager.Instance.DeleteQuestData(_questData);
+                                _confirmState = EConfirmState.DeleteSuccess;
+                            }
+                        }
                     }
-                    if (GUILayout.Button(DeleteTextValue))
+                    else
                     {
-                        //SwitchData 구성요소인지 체크
-                        if (SQLiteManager.Instance.GetSearchSwitchDescriptionDataList(_questData.QuestId).Count() != 0)
+                        if (GUILayout.Button(CreateTextValue))
                         {
-                            _confirmState = EConfirmState.DeleteFailUseSwitch;
-                        }
-                        else
-                        {
-                            SQLiteManager.Instance.DeleteQuestData(_questData);
-                            _confirmState = EConfirmState.DeleteSuccess;
+                            //아이디 채크
+                            if (string.IsNullOrEmpty(_questData.QuestId))
+                            {
+                                _confirmState = EConfirmState.CreateFailEmptyId;
+                            }
+                            else if (null != SQLiteManager.Instance.GetQuestData(_questData.QuestId))
+                            {
+                                _confirmState = EConfirmState.CreateFailOverlapId;
+                            }
+                            else
+                            {
+                                SQLiteManager.Instance.CreateQuestData(_questData);
+                                _confirmState = EConfirmState.CreateSuccess;
+                            }
                         }
                     }
+
+                    GUILayout.Space(position.width * 0.2f);
                 }
-                else
-                {
-                    if (GUILayout.Button(CreateTextValue))
-                    {
-                        //아이디 채크
-                        if (string.IsNullOrEmpty(_questData.QuestId))
-                        {
-                            _confirmState = EConfirmState.CreateFailEmptyId;
-                        }
-                        else if (null != SQLiteManager.Instance.GetQuestData(_questData.QuestId))
-                        {
-                            _confirmState = EConfirmState.CreateFailOverlapId;
-                        }
-                        else
-                        {
-                            SQLiteManager.Instance.CreateQuestData(_questData);
-                            _confirmState = EConfirmState.CreateSuccess;
-                        }
-                    }
-                }
-                
-                GUILayout.Space(position.width * 0.2f);
                 GUILayout.EndHorizontal();
             }
             EditorGUI.EndDisabledGroup();

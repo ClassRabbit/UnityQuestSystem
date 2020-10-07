@@ -32,7 +32,6 @@ namespace QuestSystem
         {
         }
 
-
         public bool Connect(string databaseName)
         {
             if (null != _connection)

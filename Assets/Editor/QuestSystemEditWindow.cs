@@ -37,7 +37,7 @@ namespace QuestSystem
 
         #region ConfirmWindow
 
-        protected void ConfirmWindow(int unusedWindowID)
+        protected void DrawConfirmWindowContent(int unusedWindowID)
         {
             ConfirmWindowProcess();
             
@@ -62,13 +62,13 @@ namespace QuestSystem
             BeginWindows();
             _confirmWindowRect.x = (position.width - _confirmWindowRect.width) / 2;
             _confirmWindowRect.y = (position.height - _confirmWindowRect.height) / 2;
-            _confirmWindowRect = GUILayout.Window(1, _confirmWindowRect, ConfirmWindow, windowName);
+            _confirmWindowRect = GUILayout.Window(1, _confirmWindowRect, DrawConfirmWindowContent, windowName);
             EndWindows();
         }
 
         #endregion
-        
-        
+
+
         #region AbstractFunction
 
         /// <summary>
@@ -82,8 +82,6 @@ namespace QuestSystem
         protected abstract void ResetEditor();
         
         #endregion
-        
-    
-    
+
     }
 }

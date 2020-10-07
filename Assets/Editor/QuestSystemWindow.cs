@@ -4,10 +4,10 @@ using UnityEditor;
 
 namespace QuestSystem
 {
-    
+
     public abstract class QuestSystemWindow : EditorWindow
     {
-
+ 
         #region Variable
 
         /// <summary>
@@ -15,12 +15,10 @@ namespace QuestSystem
         /// </summary>
         protected string DatabaseName { get; private set; }
 
-
         #endregion
-        
-        
+
         #region UnityEventFunction
-        
+
         protected void OnEnable()
         {
             EnableProcess();
@@ -46,9 +44,8 @@ namespace QuestSystem
             {
                 SQLiteManager.Instance.Connect(DatabaseName);
             }
-            
+
             bool isRefresh = false;
-            
             if (string.IsNullOrEmpty(DatabaseName))
             {
                 //결정된 디비가 없음
@@ -60,24 +57,23 @@ namespace QuestSystem
                 isRefresh = true;
                 SQLiteManager.Instance.Connect(DatabaseName);
             }
-            
+
             if (!SQLiteManager.Instance.IsConnected)
             {
                 Debug.LogError("SQLite is Not Connect");
                 return;
             }
-            
+
             if (isRefresh)
             {
                 RefreshProcess();
             }
-            
+
             FocusProcess();
         }
-        
-        #endregion  
-        
-        
+
+        #endregion
+
         #region Virtualfunction
 
         /// <summary>
@@ -102,8 +98,5 @@ namespace QuestSystem
 
         #endregion
     }
-    
-        
+
 }
-
-
