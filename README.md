@@ -13,7 +13,7 @@ UnityQuestSystem을 이용해서 게임의 분기, 오브젝트 온오프 등 �
 1. 기기에 Unity Editor (2019.3.3f1 or newer)를 설치합니다.
 2. Git을 통해 UnityQueestSystem을 하드 드라이브에 클론합니다.  
 ~~~
-git clone https://github.com/IronKim/UnityQuestSystem  
+git clone https://github.com/ClassRabbit/UnityQuestSystem  
 ~~~
 3. Unity 에디터로 Unity 프로젝트를 엽니다.
 4. Unity 에디터를 통해 UnityQuestSystem 패키지를 가져옵니다.  
@@ -103,7 +103,7 @@ Quest - [Q0003]가 클리어 된 상태일때
 QuestSystem -> PreferencesWindow
 ~~~
   
-[![PreferencesWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/preferences.png )
+[![PreferencesWindow](https://classrabbit.github.io/assets/image/project/unityquestsystem/preferences.png)](https://classrabbit.github.io/assets/image/project/unityquestsystem/preferences.png )
 
 1. 원하는 데이터베이스명을 입력하고 **결정** 버튼을 누르면 프로젝트 내로 StreamingAssets 디렉토리에 SQLite 데이터베이스가 생성됩니다.
 ~~~
@@ -116,7 +116,7 @@ Assets/StreamingAssets/DatabaseName
 QuestSystem -> EditQuestWindow
 ~~~
 
-[![QuestWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/quest.png )
+[![QuestWindow](https://classrabbit.github.io/assets/image/project/unityquestsystem/quest.png)](https://classrabbit.github.io/assets/image/project/unityquestsystem/quest.png )
 
 1. **QuestId**를 입력합니다. (필수)
 2. **설명**을 입력합니다. (선택)
@@ -128,7 +128,7 @@ QuestSystem -> EditQuestWindow
 QuestSystem -> EditSwitchWindow
 ~~~
 
-[![SwitchWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/switch.png )
+[![SwitchWindow](https://classrabbit.github.io/assets/image/project/unityquestsystem/switch.png)](https://classrabbit.github.io/assets/image/project/unityquestsystem/switch.png )
 
 1. **QuestId**를 입력합니다. (필수)
 2. **기본 결과**를 선택합니다.
@@ -142,10 +142,10 @@ Unity 에디터에서 UnityQuestSystem의 SearchWindow를 통해서 생성된 Qu
 QuestSystem -> SearchWindow
 ~~~
 
-[![SearchQuestWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/searchquest.png )
+[![SearchQuestWindow](https://classrabbit.github.io/assets/image/project/unityquestsystem/searchquest.png)](https://classrabbit.github.io/assets/image/project/unityquestsystem/searchquest.png )
 <br>
 
-[![SearchSwitchWindow](https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png)](https://ironkim.github.io/assets/image/project/unityquestsystem/searchswitch.png )
+[![SearchSwitchWindow](https://classrabbit.github.io/assets/image/project/unityquestsystem/searchswitch.png)](https://classrabbit.github.io/assets/image/project/unityquestsystem/searchswitch.png )
 
 ### 게임 구현하기
 1. 추상 클래스 **UnityQuestSystem.SwitchController**를 상속하여 Switch의 결과 값에 따른 행동을 구현합니다.
@@ -167,7 +167,7 @@ UnityQuestSystem.QuestManager.Instance.Update();
 ~~~
 Assets/Scene/QuestSystem/SampleScene
 ~~~
-[![Demo](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg)](https://ironkim.github.io/assets/image/project/unityquestsystem/demo.jpg )
+[![Demo](https://classrabbit.github.io/assets/image/project/unityquestsystem/demo.jpg)](https://classrabbit.github.io/assets/image/project/unityquestsystem/demo.jpg )
 
 * **Quest Menu**를 통해서 Quest를 해결할 수 있습니다.
 * **Switch Menu**를 통해서 Scene에 포함된 Switch의 현재 상태 결과를 확인할 수 있습니다.
@@ -175,4 +175,4 @@ Assets/Scene/QuestSystem/SampleScene
 
 ## Built with
 * [Unity](https://unity.com/)
-* [SQLite4Unity3d](https://github.com/IronKim/SQLite4Unity3d)
+* [SQLite4Unity3d](https://github.com/ClassRabbit/SQLite4Unity3d)
