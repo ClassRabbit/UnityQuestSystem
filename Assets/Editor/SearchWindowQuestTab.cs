@@ -6,7 +6,9 @@ using System.Collections.Generic;
 
 namespace QuestSystem
 {
-
+    /// <summary>
+    ///     검색 창의 퀘스트 탭
+    /// </summary>
     internal class SearchWindowQuestTab : SearchWindowTab<QuestData>
     {
         #region Const
@@ -23,23 +25,23 @@ namespace QuestSystem
         #endregion
 
         /// <summary>
-        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        ///     두 데이터가 서로 같음을 확인하는 방식 결정
         /// </summary>
         protected override bool IsSameData(QuestData ta, QuestData tb)
         {
             return ta.QuestId == tb.QuestId;
         }
-        
+
         /// <summary>
-        ///   <para>현재 페이지 새롭게 그리기</para>
+        ///     현재 페이지 새롭게 그리기
         /// </summary>
         protected override void RefreshPageListProcess()
         {
             // 추가 행동 없음
         }
-        
+
         /// <summary>
-        ///   <para>조회 실행</para>
+        ///     조회 실행
         /// </summary>
         protected override void ActionSearch()
         {
@@ -57,7 +59,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>테이블 그리기</para>
+        ///     테이블 그리기
         /// </summary>
         protected override void DrawTableProcess()
         {
@@ -80,26 +82,28 @@ namespace QuestSystem
                     {
                         GUILayout.BeginHorizontal("box");
                     }
-
-                    if (GUILayout.Button(questData.QuestId, "FrameBox",
-                        GUILayout.Width(ColumnHeader.GetColumn(0).width - 10)))
                     {
-                        SelectedDataIndex = i;
-                    }
+                        //클릭 액션
+                        if (GUILayout.Button(questData.QuestId, "FrameBox",
+                            GUILayout.Width(ColumnHeader.GetColumn(0).width - 10)))
+                        {
+                            SelectedDataIndex = i;
+                        }
 
-                    if (GUILayout.Button(questData.Description, "FrameBox",
-                        GUILayout.Width(ColumnHeader.GetColumn(1).width - 10)))
-                    {
-                        SelectedDataIndex = i;
+                        //클릭 액션
+                        if (GUILayout.Button(questData.Description, "FrameBox",
+                            GUILayout.Width(ColumnHeader.GetColumn(1).width - 10)))
+                        {
+                            SelectedDataIndex = i;
+                        }
                     }
-
                     GUILayout.EndHorizontal();
                 }
             }
         }
 
         /// <summary>
-        ///   <para>세부 정보 그리기</para>
+        ///     세부 정보 그리기
         /// </summary>
         protected override void DrawDetailProcess()
         {
@@ -136,7 +140,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>테이블 컬럼 resize될시 실행</para>
+        ///     테이블 컬럼 resize될시 실행
         /// </summary>
         protected override void ResizeColumn()
         {
@@ -162,7 +166,5 @@ namespace QuestSystem
                 }
             };
         }
-        
-        
     }
 }

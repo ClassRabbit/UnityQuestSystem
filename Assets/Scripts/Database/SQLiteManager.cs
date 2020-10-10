@@ -168,14 +168,119 @@ namespace QuestSystem
         {
             return _connection.Query<QuestData>(QueryGetAllQuestDataList);
         }
-        
+
 
         #endregion
-        
+
+
+        #region SwitchData
+
+        public bool CreateSwitchData(string switchId, 
+            SwitchDescriptionData descriptionData, 
+            List<List<SwitchComponentData>> stateList, 
+            List<SwitchStateResultData> stateResultDataList)
+        {
+            try
+            {
+                _connection.BeginTransaction();
+                {
+                    CreateSwitchDescriptionData(descriptionData);
+
+                    foreach (var state in stateList)
+                    {
+                        foreach (var stateComponent in state)
+                        {
+                            CreateSwitchComponentData(stateComponent);
+                        }
+                    }
+
+                    for (int stateIdx = 0; stateIdx < stateResultDataList.Count; ++stateIdx)
+                    {
+                        var stateResult = stateResultDataList[stateIdx];
+                        stateResult.SwitchId = switchId;
+                        stateResult.State = stateIdx;
+
+                        CreateSwitchStateResultData(stateResult);
+                    }
+                }
+                _connection.Commit();
+                return true;
+            }
+            catch
+            {
+                _connection.Rollback();
+                return false;
+            }
+        }
+
+        public bool UpdateSwitchData(string switchId,
+            SwitchDescriptionData descriptionData,
+            List<List<SwitchComponentData>> stateList,
+            List<SwitchStateResultData> stateResultDataList)
+        {
+            try
+            {
+                _connection.BeginTransaction();
+                {
+                    UpdateSwitchDescriptionData(descriptionData);
+
+                    DeleteSwitchComponentDataBySwitchId(switchId);
+                    DeleteSwitchStateResultDataBySwitchId(switchId);
+
+                    foreach (var state in stateList)
+                    {
+                        foreach (var stateComponent in state)
+                        {
+                            CreateSwitchComponentData(stateComponent);
+                        }
+                    }
+
+                    for (int stateIdx = 0; stateIdx < stateResultDataList.Count; ++stateIdx)
+                    {
+                        var stateResult = stateResultDataList[stateIdx];
+                        stateResult.SwitchId = switchId;
+                        stateResult.State = stateIdx;
+
+                        CreateSwitchStateResultData(stateResult);
+                    }
+
+                }
+                _connection.Commit();
+                return true;
+            }
+            catch
+            {
+                _connection.Rollback();
+                return false;
+            }
+        }
+
+        public bool DeleteSwitchData(string switchId)
+        {
+            try
+            {
+                _connection.BeginTransaction();
+                {
+                    DeleteSwitchDescriptionDataBySwitchId(switchId);
+                    DeleteSwitchComponentDataBySwitchId(switchId);
+                    DeleteSwitchStateResultDataBySwitchId(switchId);
+                }
+                _connection.Commit();
+                return true;
+            }
+            catch
+            {
+                _connection.Rollback();
+                return false;
+            }
+        }
+
+        #endregion
+
 
 
         #region SwitchDescriptionData
-        
+
         public SwitchDescriptionData CreateSwitchDescriptionData(SwitchDescriptionData descriptionData)
         {
             return CreateData(descriptionData);

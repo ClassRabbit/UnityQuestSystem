@@ -22,8 +22,6 @@ namespace QuestSystem
 
         #endregion
 
-
-
         #region Variable
 
         private List<List<SwitchComponentData>> _currentPageComponentDataList;
@@ -32,10 +30,8 @@ namespace QuestSystem
         protected override int MaxPageIndex => (TargetDataList.Count - 1) / SwitchPerPage;
 
         #endregion
-        
-        
+
         /// <summary>
-        ///   <para></para>
         /// </summary>
         void SetTablePageData()
         {
@@ -59,17 +55,17 @@ namespace QuestSystem
                 }
             }
         }
-        
+
         /// <summary>
-        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        ///     두 데이터가 서로 같음을 확인하는 방식 결정
         /// </summary>
         protected override bool IsSameData(SwitchDescriptionData ta, SwitchDescriptionData tb)
         {
             return ta.SwitchId == tb.SwitchId;
         }
-        
+
         /// <summary>
-        ///   <para>현재 페이지 새롭게 그리기</para>
+        ///     현재 페이지 새롭게 그리기
         /// </summary>
         protected override void RefreshPageListProcess()
         {
@@ -77,7 +73,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>조회 실행</para>
+        ///     조회 실행
         /// </summary>
         protected override void ActionSearch()
         {
@@ -89,7 +85,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>테이블 그리기</para>
+        ///     테이블 그리기
         /// </summary>
         protected override void DrawTableProcess()
         {
@@ -183,9 +179,9 @@ namespace QuestSystem
                 }
             }
         }
-        
+
         /// <summary>
-        ///   <para>세부 정보 그리기</para>
+        ///     세부 정보 그리기
         /// </summary>
         protected override void DrawDetailProcess()
         {
@@ -227,7 +223,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>테이블 컬럼 resize될시 실행</para>
+        ///     테이블 컬럼 resize될시 실행
         /// </summary>
         protected override void ResizeColumn()
         {
@@ -281,7 +277,6 @@ namespace QuestSystem
                 
             };
         }
-        
-        
+
     }
 }

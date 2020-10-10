@@ -18,11 +18,14 @@ namespace QuestSystem
         protected const string DeleteTextValue = "삭제";
         
         protected const string CreateSuccessTextValue = "생성되었습니다.";
+        protected const string CreateFailTextValue = "생성을 실패하였습니다.";
         protected const string UpdateSuccessTextValue = "수정되었습니다.";
+        protected const string UpdateFailTextValue = "수정을 실패하였습니다.";
         protected const string DeleteSuccessTextValue = "삭제되었습니다.";
+        protected const string DeleteFaileTextValue = "삭제를 실패하였습니다.";
 
         #endregion
-        
+
         #region Variable
 
         // 확인창 크기
@@ -31,12 +34,15 @@ namespace QuestSystem
 
         protected string ConfirmWindowNoticeText { get; set; } = string.Empty;
         protected Action ConfirmWindowAction { get; set; } = null;
-        
+
         #endregion
 
 
         #region ConfirmWindow
 
+        /// <summary>
+        ///     확인 창 그리기
+        /// </summary>
         protected void DrawConfirmWindowContent(int unusedWindowID)
         {
             ConfirmWindowProcess();
@@ -55,6 +61,9 @@ namespace QuestSystem
             }
         }
 
+        /// <summary>
+        ///     확인 창 화면 그리기
+        /// </summary>
         protected void DrawConfirmWindow(string windowName)
         {
             Rect rect = new Rect(0, 0, position.width, position.height);
@@ -72,12 +81,12 @@ namespace QuestSystem
         #region AbstractFunction
 
         /// <summary>
-        ///   <para>확인창 구성하는 행동</para>
+        ///     확인창 구성하는 행동
         /// </summary>
         protected abstract void ConfirmWindowProcess();
 
         /// <summary>
-        ///   <para>창을 초기화하는 행동</para>
+        ///     창을 초기화하는 행동
         /// </summary>
         protected abstract void ResetEditor();
         

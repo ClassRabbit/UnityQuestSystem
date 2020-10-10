@@ -60,9 +60,9 @@ namespace QuestSystem
             EditSwitchWindow window = (EditSwitchWindow)EditorWindow.GetWindow(typeof(EditSwitchWindow));
             window.Show();
         }
-        
+
         /// <summary>
-        ///   <para>SearchWindow에서 수정 요청 함수</para>
+        ///     SearchWindow에서 수정 요청 함수
         /// </summary>
         internal void UpdateSwitchData(SwitchDescriptionData descriptionData, List<SwitchComponentData> componentDataList, List<SwitchStateResultData> stateResultDataList)
         {
@@ -98,9 +98,9 @@ namespace QuestSystem
                 _stateResultDataList.Add(stateResultData);
             }
         }
-        
+
         /// <summary>
-        ///   <para>상태를 추가한다.</para>
+        ///     상태를 추가한다.
         /// </summary>
         private void AddState()
         {
@@ -113,9 +113,9 @@ namespace QuestSystem
             var stateResultData = new SwitchStateResultData();
             _stateResultDataList.Add(stateResultData);
         }
-        
+
         /// <summary>
-        ///   <para>OnEnable 되었을 시 행동</para>
+        ///     OnEnable 되었을 시 행동
         /// </summary>
         protected override void EnableProcess()
         {
@@ -130,7 +130,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>확인창 구성하는 행동</para>
+        ///     확인창 구성하는 행동
         /// </summary>
         protected override void ConfirmWindowProcess()
         {
@@ -146,9 +146,9 @@ namespace QuestSystem
                 _confirmState = EConfirmState.None;
             };
         }
-        
+
         /// <summary>
-        ///   <para>창을 초기화하는 행동</para>
+        ///     창을 초기화하는 행동
         /// </summary>
         protected override void ResetEditor()
         {
@@ -161,7 +161,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>창을 그리는 행동</para>
+        ///     창을 그리는 행동
         /// </summary>
         protected override void GUIProcess()
         {
@@ -304,23 +304,31 @@ namespace QuestSystem
                     
                     if (GUILayout.Button(UpdateTextValue))
                     {
-                        if (CheckProcess())
+                        if (CheckProcess() && UpdateProcess())
                         {
-                            DeleteProcess();
-                            SaveProcess();
                             _confirmState = EConfirmState.UpdateSuccess;
+                            ConfirmWindowNoticeText = UpdateSuccessTextValue;
                         }
                         else
                         {
                             _confirmState = EConfirmState.Fail;
+                            ConfirmWindowNoticeText = UpdateFailTextValue;
                         }
                     }
                     if (GUILayout.Button(DeleteTextValue))
                     {
                         //SwitchData 구성요소인지 체크
-                        DeleteProcess();
-                        ConfirmWindowNoticeText = DeleteSuccessTextValue;
-                        _confirmState = EConfirmState.DeleteSuccess;
+                        if(DeleteProcess())
+                        {
+                            _confirmState = EConfirmState.DeleteSuccess;
+                            ConfirmWindowNoticeText = DeleteSuccessTextValue;
+                        }
+                        else
+                        {
+                            _confirmState = EConfirmState.Fail;
+                            ConfirmWindowNoticeText = DeleteFaileTextValue;
+                        }
+                        
                     }
                     
                 }
@@ -328,14 +336,15 @@ namespace QuestSystem
                 {
                     if (GUILayout.Button(CreateTextValue))
                     {
-                        if (CheckProcess())
+                        if (CheckProcess() && CreateProcess())
                         {
-                            SaveProcess();
                             _confirmState = EConfirmState.CreateSuccess;
+                            ConfirmWindowNoticeText = CreateSuccessTextValue;
                         }
                         else
                         {
                             _confirmState = EConfirmState.Fail;
+                            ConfirmWindowNoticeText = CreateFailTextValue;
                         }
                     }
                 }
@@ -357,7 +366,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>생성을 위한 구성요소 확인.</para>
+        ///     생성을 위한 구성요소 확인.
         /// </summary>
         private bool CheckProcess()
         {
@@ -403,45 +412,27 @@ namespace QuestSystem
         }
         
         /// <summary>
-        ///   <para>SwitchData 생성</para>
+        ///   SwitchData 생성
         /// </summary>
-        private void SaveProcess()
+        private bool CreateProcess()
         {
-            var switchId = _descriptionData.SwitchId;
-            
-            SQLiteManager.Instance.CreateSwitchDescriptionData(_descriptionData);
-            
-            foreach (var state in _stateList)
-            {
-                foreach (var stateComponent in state)
-                {
-                    SQLiteManager.Instance.CreateSwitchComponentData(stateComponent);
-                }
-            }
-
-            for (int stateIdx = 0; stateIdx < _stateResultDataList.Count; ++stateIdx)
-            {
-                var stateResult = _stateResultDataList[stateIdx];
-                stateResult.SwitchId = switchId;
-                stateResult.State = stateIdx;
-                
-                SQLiteManager.Instance.CreateSwitchStateResultData(stateResult);
-            }
-            ConfirmWindowNoticeText = IsUpdate ? UpdateSuccessTextValue : CreateSuccessTextValue;
+            return SQLiteManager.Instance.CreateSwitchData(_descriptionData.SwitchId, _descriptionData, _stateList, _stateResultDataList);
         }
-        
-        /// <summary>
-        ///   <para>SwitchData 삭제</para>
-        /// </summary>
-        private void DeleteProcess()
-        {
-            var switchId = _descriptionData.SwitchId;
-            
-            SQLiteManager.Instance.DeleteSwitchDescriptionDataBySwitchId(switchId);
-            
-            SQLiteManager.Instance.DeleteSwitchComponentDataBySwitchId(switchId);
 
-            SQLiteManager.Instance.DeleteSwitchStateResultDataBySwitchId(switchId);
+        /// <summary>
+        ///   SwitchData 수정
+        /// </summary>
+        private bool UpdateProcess()
+        {
+            return SQLiteManager.Instance.UpdateSwitchData(_descriptionData.SwitchId, _descriptionData, _stateList, _stateResultDataList);
+        }
+
+        /// <summary>
+        ///   SwitchData 삭제
+        /// </summary>
+        private bool DeleteProcess()
+        {
+            return SQLiteManager.Instance.DeleteSwitchData(_descriptionData.SwitchId);
         }
 
     }

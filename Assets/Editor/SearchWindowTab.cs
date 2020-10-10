@@ -6,7 +6,9 @@ using System.Collections.Generic;
 
 namespace QuestSystem
 {
-    
+    /// <summary>
+    ///     검색 창의 탭 추상 클래스
+    /// </summary>
     internal abstract class SearchWindowTab<T> where T : class
     {
 
@@ -281,7 +283,7 @@ namespace QuestSystem
             //맨밑 경계
             GUILayout.Space(7);
             Rect tableBottomBarRect = new Rect(TabPosition.x, TabPosition.height - detailHeight - TabPadding, TabPosition.width, 4);
-            EditorGUI.DrawRect(tableBottomBarRect, new Color32(221, 221, 221, 255));
+            GUILayout.Space(3);
         }
         
         /// <summary>
@@ -308,11 +310,7 @@ namespace QuestSystem
             DrawDetailProcess();
             GUILayout.EndScrollView();
         }
-        
-        
 
-        
-        
         #region AbstractFunction
         
         /// <summary>

@@ -75,11 +75,5 @@ public class GUITest : EditorWindow
         }
 
         GUILayout.EndScrollView();
-
-
-
     }
-
-    
-    
 }

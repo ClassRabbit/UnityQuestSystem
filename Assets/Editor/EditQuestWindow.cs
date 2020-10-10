@@ -5,7 +5,6 @@ using UnityEditor;
 
 namespace QuestSystem
 {
-    
     public class EditQuestWindow : QuestSystemEditWindow
     {
         #region Const
@@ -30,8 +29,7 @@ namespace QuestSystem
         private const string QuestIdText = "QuestId";
         
         #endregion
-        
-        
+
         #region Variable
         
         private bool IsUpdate { get; set; } = false;
@@ -48,7 +46,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>SearchWindow에서 수정 요청 함수</para>
+        ///     SearchWindow에서 수정 요청 함수
         /// </summary>
         internal void UpdateQuestData(QuestData questData)
         {
@@ -62,7 +60,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>확인창 구성하는 행동</para>
+        ///     확인창 구성하는 행동
         /// </summary>
         protected override void ConfirmWindowProcess()
         {

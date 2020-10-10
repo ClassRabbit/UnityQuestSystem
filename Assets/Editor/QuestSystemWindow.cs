@@ -4,14 +4,13 @@ using UnityEditor;
 
 namespace QuestSystem
 {
-
     public abstract class QuestSystemWindow : EditorWindow
     {
- 
+
         #region Variable
 
         /// <summary>
-        ///   <para>현재 창을 구성하는 Database 이름</para>
+        ///     현재 창을 구성하는 Database 이름
         /// </summary>
         protected string DatabaseName { get; private set; }
 
@@ -77,26 +76,25 @@ namespace QuestSystem
         #region Virtualfunction
 
         /// <summary>
-        ///   <para>OnEnable 되었을 시 행동</para>
+        ///     OnEnable 되었을 시 행동
         /// </summary>
         protected abstract void EnableProcess();
 
         /// <summary>
-        ///   <para>Database 변경되었을 시 행동</para>
+        ///     Database 변경되었을 시 행동
         /// </summary>
         protected abstract void RefreshProcess();
 
         /// <summary>
-        ///   <para>OnGUI 되었을 시 행동</para>
+        ///     OnGUI 되었을 시 행동
         /// </summary>
         protected abstract void GUIProcess();
 
         /// <summary>
-        ///   <para>OnFocus 되었을 시 행동</para>
+        /// OnFocus 되었을 시 행동
         /// </summary>
         protected abstract void FocusProcess();
 
         #endregion
     }
-
 }
