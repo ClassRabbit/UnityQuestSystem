@@ -65,11 +65,17 @@ namespace QuestSystem
 
         protected override void FocusProcess()
         {
-            var questDataList = SQLiteManager.Instance.GetAllQuestDataList();
-            _questTab.FocusProcess(questDataList);
-            
-            var switchDescriptionDataList = SQLiteManager.Instance.GetAllSwitchDescriptionDataList();
-            _switchTab.FocusProcess(switchDescriptionDataList);
+            switch(_selectedMode)
+            {
+                case EMode.Quest:
+                    var questDataList = SQLiteManager.Instance.GetAllQuestDataList();
+                    _questTab.FocusProcess(questDataList);
+                    break;
+                case EMode.Switch:
+                    var switchDescriptionDataList = SQLiteManager.Instance.GetAllSwitchDescriptionDataList();
+                    _switchTab.FocusProcess(switchDescriptionDataList);
+                    break;
+            }
         }
     
     

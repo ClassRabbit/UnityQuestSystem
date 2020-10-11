@@ -19,8 +19,7 @@ namespace QuestSystem
         private const int PageAreaHeight = 100;
         private const int TopAreaHeight = 60;
         private const int TabPadding = 10;
-        
-        
+
         protected const string DescriptionTextValue = "세부 정보";
 
         #endregion
@@ -72,12 +71,12 @@ namespace QuestSystem
         protected List<int> ShowingPageIndexList { get; set; }  = new List<int>();
         protected int CurrentPageIndex { get; set; }
         protected virtual int MaxPageIndex => 0;
-        
+
         #endregion
-        
-        
+
+
         /// <summary>
-        ///   <para>Focus시 데이터 업데이트</para>
+        ///     Focus시 데이터 업데이트
         /// </summary>
         internal void FocusProcess(List<T> dataList)
         {
@@ -92,6 +91,7 @@ namespace QuestSystem
             {
                 ActionSearch();
             }
+
             if (selectedData != null)
             {
                 bool isFound = false;
@@ -136,7 +136,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>현재 페이지의 데이터 재확인</para>
+        ///     현재 페이지의 데이터 재확인
         /// </summary>
         protected void RefreshPageList()
         {
@@ -177,9 +177,9 @@ namespace QuestSystem
 
             RefreshPageListProcess();
         }
-        
+
         /// <summary>
-        ///   <para>검색바 그리기</para>
+        ///     검색바 그리기
         /// </summary>
         void DrawSearchBar()
         {
@@ -209,7 +209,7 @@ namespace QuestSystem
         }
 
         /// <summary>
-        ///   <para>테이블 그리기</para>
+        ///     테이블 그리기
         /// </summary>
         void DrawTable(float detailHeight)
         {
@@ -285,9 +285,9 @@ namespace QuestSystem
             Rect tableBottomBarRect = new Rect(TabPosition.x, TabPosition.height - detailHeight - TabPadding, TabPosition.width, 4);
             GUILayout.Space(3);
         }
-        
+
         /// <summary>
-        ///   <para>페이지 버튼 생성</para>
+        ///     페이지 버튼 생성
         /// </summary>
         void CreatePageButton(bool isDisabled, string buttonText, Action buttonAction)
         {
@@ -299,9 +299,9 @@ namespace QuestSystem
             }
             EditorGUI.EndDisabledGroup();
         }
-        
+
         /// <summary>
-        ///   <para>디테일 그리기</para>
+        ///     디테일 그리기
         /// </summary>
         void DrawDetail(float detailHeight)
         {
@@ -312,34 +312,34 @@ namespace QuestSystem
         }
 
         #region AbstractFunction
-        
+
         /// <summary>
-        ///   <para>두 데이터가 서로 같음을 확인하는 방식 결정</para>
+        ///     두 데이터가 서로 같음을 확인하는 방식 결정
         /// </summary>
         protected abstract bool IsSameData(T ta, T tb);
-        
+
         /// <summary>
-        ///   <para>현재 페이지 새롭게 그리기</para>
+        ///     현재 페이지 새롭게 그리기
         /// </summary>
         protected abstract void RefreshPageListProcess();
-        
+
         /// <summary>
-        ///   <para>조회 실행</para>
+        ///     조회 실행
         /// </summary>
         protected abstract void ActionSearch();
-        
+
         /// <summary>
-        ///   <para>테이블 그리기</para>
+        ///     테이블 그리기
         /// </summary>
         protected abstract void DrawTableProcess();
-        
+
         /// <summary>
-        ///   <para>세부 정보 그리기</para>
+        ///     세부 정보 그리기
         /// </summary>
         protected abstract void DrawDetailProcess();
-        
+
         /// <summary>
-        ///   <para>테이블 컬럼 resize될시 실행</para>
+        ///     테이블 컬럼 resize될시 실행
         /// </summary>
         protected abstract void ResizeColumn();
         
